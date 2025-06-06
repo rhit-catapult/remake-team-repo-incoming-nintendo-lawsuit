@@ -30,13 +30,13 @@ def test_character():
                 sys.exit()
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[pygame.K_UP]:
-            character.y -= .2
+            character.y -= 5
         if pressed_keys[pygame.K_DOWN]:
-            character.y += .2
+            character.y += 5
         if pressed_keys[pygame.K_RIGHT]:
-            character.x += .2
+            character.x += 5
         if pressed_keys[pygame.K_LEFT]:
-            character.x -= .2
+            character.x -= 5
 
         screen.fill("white")
         character.draw()
