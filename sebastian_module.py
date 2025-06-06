@@ -1,6 +1,6 @@
 import pygame
 import sys
-
+import random
 
 class Character:
     def __init__(self, screen: pygame.Surface, x, y):
@@ -12,6 +12,17 @@ class Character:
         pygame.draw.rect(self.screen, "blue", (self.x, self.y, 20, 20))
         pygame.draw.circle(self.screen, "red", (self.x + 5, self.y + 5), 3)
         pygame.draw.circle(self.screen, "red", (self.x + 15, self.y + 5), 3)
+class Boss:
+    def __init__(self, screen: pygame.Surface, x, y):
+        self.screen = screen
+        self.radius = (50)
+        self.x = random.randint(self.radius, self.screen.get_width() - self.radius)
+        self.y = random.randint(self.radius, self.screen.get_height() - self.radius)
+        self.speed_x = random.randint(1, 10)
+        self.speed_y = random.randint(1, 10)
+        self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+    def draw(self):
+        pygame.draw.rect(self.screen, (self.color), (self.x, self.y), )
 
 
 
@@ -22,6 +33,7 @@ def test_character():
     # TODO: change this function to test your class
     screen = pygame.display.set_mode((640, 480))
     character = Character(screen, 400, 400)
+    boss = Boss(screen, 400, 400)
     clock = pygame.time.Clock()
     clock.tick(60)
     while True:
@@ -40,6 +52,7 @@ def test_character():
 
         screen.fill("white")
         character.draw()
+        boss.draw()
         pygame.display.update()
 
 
