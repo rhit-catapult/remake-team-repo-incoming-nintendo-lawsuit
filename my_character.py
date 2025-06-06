@@ -21,19 +21,21 @@ def test_character():
     # TODO: change this function to test your class
     screen = pygame.display.set_mode((640, 480))
     character = Character(screen, 400, 400)
+    clock = pygame.time.Clock()
+    clock.tick(60)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[pygame.K_UP]:
-            character.y -= 10
+            character.y -= .2
         if pressed_keys[pygame.K_DOWN]:
-            character.y += 10
+            character.y += .2
         if pressed_keys[pygame.K_RIGHT]:
-            character.x += 10
+            character.x += .2
         if pressed_keys[pygame.K_LEFT]:
-            character.x -= 10
+            character.x -= .2
 
         screen.fill("white")
         character.draw()
