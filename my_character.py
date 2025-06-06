@@ -25,6 +25,15 @@ def test_character():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+        pressed_keys = pygame.key.get_pressed()
+        if pressed_keys[pygame.K_UP]:
+            character.y -= 10
+        if pressed_keys[pygame.K_DOWN]:
+            character.y += 10
+        if pressed_keys[pygame.K_RIGHT]:
+            character.x += 10
+        if pressed_keys[pygame.K_LEFT]:
+            character.x -= 10
 
         screen.fill("white")
         character.draw()
