@@ -7,6 +7,7 @@ class Player:
         self.image_width = self.image_temporary.get_rect().width
         self.image_height = self.image_temporary.get_rect().height
         self.image = pygame.transform.scale(self.image_temporary, (self.image_width / 7.5, self.image_height / 7.5))
+        self.flipped_image = pygame.transform.flip(self.image, True, False)
         self.rect = self.image.get_rect()
         self.screen = screen
         self.x = x
@@ -19,8 +20,11 @@ class Player:
         self.jump_time = 0
         self.jump_timer = 0
         self.hitbox = (self.x,self.y,self.x+46,self.y+50)
-    def draw(self):
-        self.screen.blit(self.image, (self.x, self.y))
+    def draw(self,moveleft):
+        if moveleft:
+            self.screen.blit(self.flipped_image,(self.x,self.y))
+        else:
+            self.screen.blit(self.image, (self.x, self.y))
     def move(self):
         self.x += self.velocity_x
         self.y += self.velocity_y

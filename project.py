@@ -11,6 +11,7 @@ def main():
     fps = pygame.time.Clock()
     player = character.Player(screen, 500, 300)
     player_speed = 5
+    move_left = False
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -18,8 +19,10 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     player.velocity_x += player_speed
+                    move_left = False
                 if event.key == pygame.K_LEFT:
                     player.velocity_x += -player_speed
+                    move_left = True
                 if event.key == pygame.K_UP:
                     player.jump_time = pygame.time.get_ticks()
                     player.jump()
@@ -33,7 +36,7 @@ def main():
 
         screen.fill((255, 255, 255))
         pygame.draw.rect(screen, (1, 50, 32), (0, screen.get_height() - 250, screen.get_width(), 250))
-        player.draw()
+        player.draw(move_left)
         player.move()
         player.collision()
         pygame.display.update()
