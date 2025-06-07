@@ -1,40 +1,41 @@
 import pygame
 import sys
-import random
-import time
+import character
 
 
 def main():
-    # turn on pygame
     pygame.init()
-
-    # create a screen
-    pygame.display.set_caption("Cool Project")
-    # TODO: Change the size of the screen as you see fit!
-    screen = pygame.display.set_mode((640, 480))
-    # creates a Character from the my_character.py file
-    character = my_character.Character(screen, 100, 100)
-
-    # let's set the framerate
-    clock = pygame.time.Clock()
+    resolution = (1000, 600)
+    screen = pygame.display.set_mode(resolution)
+    pygame.display.set_caption("work pls")
+    fps = pygame.time.Clock()
+    player = character.Player(screen, 500, 300)
+    player_speed = 5
     while True:
-        clock.tick(60)  # this sets the framerate of your game
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    player.velocity_x += player_speed
+                if event.key == pygame.K_LEFT:
+                    player.velocity_x += -player_speed
+                if event.key == pygame.K_UP:
+                    player.jump_time = pygame.time.get_ticks()
+                    player.jump()
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    player.velocity_x -= player_speed
+                if event.key == pygame.K_LEFT:
+                    player.velocity_x += player_speed
+                if event.key == pygame.K_UP and not player.on_ground:
+                    player.jump_timer = 16
 
-            # TODO: Add you events code
-
-        # TODO: Fill the screen with whatever background color you like!
         screen.fill((255, 255, 255))
-
-        # draws the character every frame
-        character.draw()
-
-        # TODO: Add your project code
-
-        # don't forget the update, otherwise nothing will show up!
+        pygame.draw.rect(screen, (1, 50, 32), (0, screen.get_height() - 250, screen.get_width(), 250))
+        player.draw(screen)
+        player.move()
+        player.collision()
         pygame.display.update()
-
-
+        fps.tick(120)
 main()
