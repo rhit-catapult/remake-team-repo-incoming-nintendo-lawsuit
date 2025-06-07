@@ -5,7 +5,7 @@ import character
 
 def main():
     pygame.init()
-    resolution = (1000, 600)
+    resolution = (960, 640)
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("work pls")
     fps = pygame.time.Clock()
@@ -19,10 +19,8 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     player.velocity_x += player_speed
-                    move_left = False
                 if event.key == pygame.K_LEFT:
                     player.velocity_x += -player_speed
-                    move_left = True
                 if event.key == pygame.K_UP:
                     player.jump_time = pygame.time.get_ticks()
                     player.jump()
@@ -36,7 +34,7 @@ def main():
 
         screen.fill((255, 255, 255))
         pygame.draw.rect(screen, (1, 50, 32), (0, screen.get_height() - 250, screen.get_width(), 250))
-        player.draw(move_left)
+        player.draw()
         player.move()
         player.collision()
         pygame.display.update()

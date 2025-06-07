@@ -1,5 +1,4 @@
 import pygame
-import sys
 
 class Player:
     def __init__(self, screen,x,y):
@@ -19,12 +18,20 @@ class Player:
         self.on_ground = True
         self.jump_time = 0
         self.jump_timer = 0
+        self.facing_left = False
         self.hitbox = (self.x,self.y,self.x+46,self.y+50)
-    def draw(self,moveleft):
-        if moveleft:
+    def draw(self):
+        if self.velocity_x < 0:
             self.screen.blit(self.flipped_image,(self.x,self.y))
+            self.facing_left = True
+        elif self.velocity_x > 0:
+            self.screen.blit(self.image, (self.x, self.y))
+            self.facing_left = False
+        elif self.facing_left:
+            self.screen.blit(self.flipped_image, (self.x, self.y))
         else:
             self.screen.blit(self.image, (self.x, self.y))
+
     def move(self):
         self.x += self.velocity_x
         self.y += self.velocity_y
