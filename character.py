@@ -19,8 +19,8 @@ class Player:
         self.jump_time = 0
         self.jump_timer = 0
         self.hitbox = (self.x,self.y,self.x+46,self.y+50)
-    def draw(self,screen):
-        screen.blit(self.image, (self.x, self.y))
+    def draw(self):
+        self.screen.blit(self.image, (self.x, self.y))
     def move(self):
         self.x += self.velocity_x
         self.y += self.velocity_y
