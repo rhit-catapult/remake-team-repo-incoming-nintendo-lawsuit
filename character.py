@@ -1,52 +1,40 @@
 import pygame
-import random
-import time
 import sys
 
-
-
-
-class Character:
-    def __init__(self, screen,x,y,x_velocity,y_velocity):
+class Player:
+    def __init__(self, screen,x,y):
         self.screen = screen
         self.x = x
         self.y = y
-        self.x_velocity = x_velocity
-        self.y_velocity = y_velocity
-    def move(self):
-        print(pygame.math.Vector2(, ))
+        self.gravity = .02
+        self.velocity_y = 0
+        self.velocity_x = 0
+        self.on_ground = False
     def draw(self):
-        pygame.draw.rect(self.screen, (100,100,100),(self.x,self.y,20,20))
-def test_character():
-    # TODO: change this function to test your class
-    screen = pygame.display.set_mode((640, 480))
-    character = Character(screen, 20, 20, 0, 0)
+        pygame.draw.rect(self.screen, (0,0,255), (self.x, self.y, 30, 50))
+    def move(self):
+        self.x += self.velocity_x
+        self.y += self.velocity_y
+
+
+
+def test():
+    pygame.init()
+    resolution = (1000,600)
+    screen = pygame.display.set_mode(resolution)
     fps = pygame.time.Clock()
     fps.tick(60)
+    player = Player(screen,10,10)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    pass
-                if event.key == pygame.K_RIGHT:
-                     pass
-                if event.key == pygame.K_UP:
-                 pass
-                if event.key == pygame.K_DOWN:
-                 pass
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT:
-                    pass
-                if event.key == pygame.K_RIGHT:
-                    pass
-                if event.key == pygame.K_UP:
-                    pass
-                if event.key == pygame.K_DOWN:
-                    pass
-        screen.fill("white")
-        character.draw()
-        character.move()
+        screen.fill((255,255,255))
+        if player.on_ground != True:
+            player.velocity_y += player.gravity
+            if player.velocity_y > 0.3:
+                player.velocity_y = 0.3
+        player.draw()
+        player.move()
         pygame.display.update()
-test_character()
+test()
