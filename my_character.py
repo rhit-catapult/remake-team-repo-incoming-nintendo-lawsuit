@@ -3,11 +3,17 @@ import sys
 
 
 class Character:
-    def __init__(self, screen: pygame.Surface, x, y):
+    def __init__(self, screen: pygame.Surface, x, y, x_velocity, y_velocity):
         self.screen = screen
         self.x = x
         self.y = y
-
+        self.y_velocity = y_velocity
+        self.x_velocity = x_velocity
+        self.falling = False
+    def move(self):
+        self.x += self.x_velocity
+        self.y += self.y_velocity
+        self.y_velocity += 5
     def draw(self):
         pygame.draw.rect(self.screen, "blue", (self.x, self.y, 20, 20))
         pygame.draw.circle(self.screen, "red", (self.x + 5, self.y + 5), 3)
@@ -21,7 +27,7 @@ class Character:
 def test_character():
     # TODO: change this function to test your class
     screen = pygame.display.set_mode((640, 480))
-    character = Character(screen, 400, 400)
+    character = Character(screen, 400, 400, 0,0)
     clock = pygame.time.Clock()
     clock.tick(60)
     while True:
@@ -29,14 +35,6 @@ def test_character():
             if event.type == pygame.QUIT:
                 sys.exit()
         pressed_keys = pygame.key.get_pressed()
-        if pressed_keys[pygame.K_UP]:
-            character.y -= .2
-        if pressed_keys[pygame.K_DOWN]:
-            character.y += .2
-        if pressed_keys[pygame.K_RIGHT]:
-            character.x += .2
-        if pressed_keys[pygame.K_LEFT]:
-            character.x -= .2
 
         screen.fill("white")
         character.draw()

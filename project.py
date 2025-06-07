@@ -1,6 +1,5 @@
 import pygame
 import sys
-import my_character
 import random
 import time
 
