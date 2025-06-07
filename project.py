@@ -33,7 +33,7 @@ def main():
 
         screen.fill((255, 255, 255))
         pygame.draw.rect(screen, (1, 50, 32), (0, screen.get_height() - 250, screen.get_width(), 250))
-        player.draw(screen)
+        player.draw()
         player.move()
         player.collision()
         pygame.display.update()
