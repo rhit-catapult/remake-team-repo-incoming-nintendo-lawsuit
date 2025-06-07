@@ -1,65 +1,85 @@
 import pygame
 import sys
-import random
+import time
 
-# class Character:
-#     def __init__(self, screen: pygame.Surface, x, y):
-#         self.screen = screen
-#         self.x = x
-#         self.y = y
-#
-#     def draw(self):
-#         pygame.draw.rect(self.screen, "blue", (self.x, self.y, 20, 20))
-#         pygame.draw.circle(self.screen, "red", (self.x + 5, self.y + 5), 3)
-#         pygame.draw.circle(self.screen, "red", (self.x + 15, self.y + 5), 3)
-class Boss:
-    def __init__(self, screen: pygame.Surface, x, y):
+class Player:
+    def __init__(self, screen,x,y):
+        self.imagetemp = pygame.image.load("SCH_Module.png")
+        self.imagewidth = self.imagetemp.get_rect().width
+        self.imageheight = self.imagetemp.get_rect().height
+        self.image = pygame.transform.scale(self.imagetemp, (self.imagewidth / 7.5, self.imageheight / 7.5))
+        self.rect = self.image.get_rect()
         self.screen = screen
-        self.radius = (50)
-        self.x = random.randint(self.radius, self.screen.get_width() - self.radius)
-        self.y = random.randint(self.radius, self.screen.get_height() - self.radius)
-        self.speed_x = random.randint(1, 10)
-        self.speed_y = random.randint(1, 10)
-        #self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-    def draw(self):
-        #pygame.draw.rect(self.screen, (self.color), (self.x, self.y), )
-        pygame.draw.rect(self.screen, "blue", (self.x, self.y, 20, 20))
-        pygame.draw.circle(self.screen, "red", (self.x + 5, self.y + 5), 3)
-        pygame.draw.circle(self.screen, "red", (self.x + 15, self.y + 5), 3)
+        self.x = x
+        self.y = y
+        self.gravity = .25
+        self.velocity_y = 0
+        self.velocity_x = 0
+        self.on_ground = True
+        self.jump_time = 0
+        self.hitbox = (self.x,self.y,self.x+46,self.y+50)
+    def draw(self,screen):
+        screen.blit(self.image, (self.x, self.y))
+        #pygame.rect(self.hitbox)
+    def move(self):
+        self.x += self.velocity_x
+        self.y += self.velocity_y
+        self.hitbox = (self.x, self.y)
+    def collision(self):
+        if self.y + 50 > self.screen.get_height() - 50:
+            self.y = self.screen.get_height() - 100
+            self.velocity_y = 0
+            self.on_ground = True
+    def jump(self, jump_power):
+        if self.on_ground:
+            self.velocity_y += jump_power
+            self.on_ground = False
 
+def test():
+    pygame.init()
+    resolution = (1000,600)
+    screen = pygame.display.set_mode(resolution)
+    fps = pygame.time.Clock()
 
-
-# This function is called when you run this file, and is used to test the Character class individually.
-# When you create more files with different classes, copy the code below, then
-# change it to properly test that class
-def test_character():
-    # TODO: change this function to test your class
-    screen = pygame.display.set_mode((640, 480))
-    #character = Character(screen, 400, 400)
-    boss = Boss(screen, 400, 400)
-    clock = pygame.time.Clock()
-    clock.tick(60)
+    player = Player(screen,500,300)
+    player_speed = 5
+    player_jump_power = 6
+    jump_timer = 0
+    jump_premature = 0
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-        # pressed_keys = pygame.key.get_pressed()
-        # if pressed_keys[pygame.K_UP]:
-        #     character.y -= 5
-        # if pressed_keys[pygame.K_DOWN]:
-        #     character.y += 5
-        # if pressed_keys[pygame.K_RIGHT]:
-        #     character.x += 5
-        # if pressed_keys[pygame.K_LEFT]:
-        #     character.x -= 5
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    player.velocity_x += player_speed
+                if event.key == pygame.K_LEFT:
+                    player.velocity_x += -player_speed
+                if event.key == pygame.K_UP:
+                    player.jump_time = pygame.time.get_ticks()
+                    player.jump(-player_jump_power)
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    player.velocity_x -= player_speed
+                if event.key == pygame.K_LEFT:
+                    player.velocity_x += player_speed
 
-        screen.fill("white")
-        #character.draw()
-        boss.draw()
+        screen.fill((255,255,255))
+        if not player.on_ground:
+            jump_timer += 1
+            if jump_timer > 15:
+                player.velocity_y += player.gravity
+                if player.velocity_y > 5:
+                    player.velocity_y = 5
+        else:
+            jump_timer = 0
+        if player.jump_time + 200 > pygame.time.get_ticks() and player.on_ground:
+            player.jump(-player_jump_power)
+        print(jump_timer)
+        pygame.draw.rect(screen, (1, 50, 32), (0, screen.get_height() - 50, screen.get_width(), 50))
+        player.draw(screen)
+        player.move()
+        player.collision()
         pygame.display.update()
-
-
-# Testing the classes
-# click the green arrow to the left or run "Current File" in PyCharm to test this class
-if __name__ == "__main__":
-    test_character()
+        fps.tick(120)
+test()
