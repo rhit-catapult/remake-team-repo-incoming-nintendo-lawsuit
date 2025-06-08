@@ -10,7 +10,7 @@ class Player:
         self.screen = screen
         self.x = x
         self.y = y
-        self.jump_power = -6
+        self.jump_power = -7
         self.gravity = .35
         self.velocity_y = 0
         self.velocity_x = 0
@@ -126,14 +126,13 @@ class Player:
             self.coyote_timer = pygame.time.get_ticks()  # reset coyote timer
         else:
             # If not on ground, check how long ago player was on ground
-            time_since_ground = pygame.time.get_ticks() - self.coyote_timer
-            self.coyote_enable = time_since_ground <= 200
+            self.coyote_enable = pygame.time.get_ticks() - self.coyote_timer <= 200
         # Additional ground check:
         sensor_height = 2
         sensor = pygame.Rect(self.hitbox.midbottom[0]-2.5, self.hitbox.bottom, 5, sensor_height)
         close_to_ground = any(sensor.colliderect(tile) for tile in tiles)
         # pygame.draw.rect(self.screen, (255, 0, 0),
-        # pygame.Rect(self.hitbox.midbottom[0]-2.5, int(self.hitbox.bottom), 5,sensor_height))
+        # pygame.Rect(self.hitbox.midbottom[0]-2.5, int(self.hitbox.bottom), 5,sensor_height)) # hitbox draw
 
         if collision_types['bottom'] or close_to_ground:
             self.on_ground = True

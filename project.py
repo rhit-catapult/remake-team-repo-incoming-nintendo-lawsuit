@@ -2,7 +2,7 @@ import pygame
 import sys
 import character
 import parkourmaptiling as tilemap
-import Camera
+import camera
 
 
 def main():
@@ -41,7 +41,7 @@ def main():
        # screen.blit(tilemap_screen, (0, 0)) # NONCAMERA
        # player.draw()
         #player.move(tilerects)
-        camera_x, camera_y = Camera.scroll_camera(player.hitbox, resolution[0], resolution[1], 7000, 7000)
+        camera_x, camera_y = camera.scroll_camera(player.hitbox, resolution[0], resolution[1], 7000, 7000)
         tilemap_screen = tilemap.map_display
         screen.blit(tilemap_screen, (-camera_x, -camera_y))  # <-- Use offset here!
         tilerects = tilemap.tile_rects
