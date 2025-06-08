@@ -29,8 +29,8 @@ def main():
                     player.velocity_x -= player_speed
                 if event.key == pygame.K_LEFT:
                     player.velocity_x += player_speed
-                # if event.key == pygame.K_UP and not player.on_ground:
-                #     player.jump_timer = 16
+                if event.key == pygame.K_UP and not player.on_ground:
+                     player.jump_timer = 16
 
         screen.fill((146, 244, 255))
         tilemap.rendermap()

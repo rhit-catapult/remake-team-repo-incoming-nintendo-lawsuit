@@ -5,7 +5,7 @@ grass_image_raw = pygame.image.load("grass_tile.png")
 dirt_image_raw = pygame.image.load("dirt_tile.png")
 dirt_image = pygame.transform.scale(dirt_image_raw, (tilesize, tilesize))
 grass_image = pygame.transform.scale(grass_image_raw, (tilesize, tilesize))
-map_display = pygame.Surface((1000,600))
+map_display = pygame.Surface((2000,600))
 
 game_map = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
