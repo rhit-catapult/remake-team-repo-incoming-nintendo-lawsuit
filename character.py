@@ -14,24 +14,39 @@ class Player:
         self.gravity = .35
         self.velocity_y = 0
         self.velocity_x = 0
-        self.on_ground = True
+        self.on_ground = False
         self.jump_time = 0
         self.jump_timer = 0
         self.facing_left = False
         self.hit_list = []
+        self.coyote_timer = 0
+        self.coyote_enable = False
         self.hitbox = pygame.Rect(self.x,self.y,31,50)
-    def draw(self):
+    def draw(self, camera_x=0, camera_y=0):
         # pygame.draw.rect(self.screen, (255, 0, 0), self.hitbox, 2) # shows player hitbox
-        if self.velocity_x < 0:
-            self.screen.blit(self.flipped_image,(self.x,self.y))
-            self.facing_left = True
-        elif self.velocity_x > 0:
-            self.screen.blit(self.image, (self.x, self.y))
-            self.facing_left = False
-        elif self.facing_left:
-            self.screen.blit(self.flipped_image, (self.x, self.y))
-        else:
-            self.screen.blit(self.image, (self.x, self.y))
+        # if self.velocity_x < 0:
+        #     self.screen.blit(self.flipped_image,(self.x,self.y))
+        #     self.facing_left = True
+        # elif self.velocity_x > 0:
+        #     self.screen.blit(self.image, (self.x, self.y))
+        #     self.facing_left = False
+        # elif self.facing_left:
+        #     self.screen.blit(self.flipped_image, (self.x, self.y))
+        # else:
+        #     self.screen.blit(self.image, (self.x, self.y))
+            draw_x = self.x - camera_x
+            draw_y = self.y - camera_y
+
+            if self.velocity_x < 0:
+                self.screen.blit(self.flipped_image, (draw_x, draw_y))
+                self.facing_left = True
+            elif self.velocity_x > 0:
+                self.screen.blit(self.image, (draw_x, draw_y))
+                self.facing_left = False
+            elif self.facing_left:
+                self.screen.blit(self.flipped_image, (draw_x, draw_y))
+            else:
+                self.screen.blit(self.image, (draw_x, draw_y))
 
     # def move(self,tiles):
     #     collision_types = {'top': False, 'bottom': False, 'left': False, 'right': False}
@@ -69,7 +84,7 @@ class Player:
     #         self.jump_timer = 0
     #     if self.jump_time + 200 > pygame.time.get_ticks() and self.on_ground: # 200ms since last jump input
     #         self.jump() # jumps when landing
-# CHATGPT VER
+# CHATGPT VERSION (MUCH BETTER FUNCTIONALLY THAN MINE - 2 HOURS OF FAILURE)
     def move(self, tiles):
         collision_types = {'top': False, 'bottom': False, 'left': False, 'right': False}
 
@@ -77,47 +92,53 @@ class Player:
         self.x += self.velocity_x
         self.hitbox.topleft = (self.x, self.y)
         self.hit_list = self.collision(tiles)
-        for tile in self.hit_list:
-            if self.velocity_x > 0:
-                self.hitbox.right = tile.left
-                self.x = self.hitbox.left  # Correct position
-                collision_types['right'] = True
-            elif self.velocity_x < 0:
-                self.hitbox.left = tile.right
-                self.x = self.hitbox.left
-                collision_types['left'] = True
+        if len(self.hit_list) > 0:
+            for tile in self.hit_list:
+                if self.velocity_x > 0:
+                    self.hitbox.right = tile.left
+                    self.x = self.hitbox.left  # Correct position
+                    collision_types['right'] = True
+                elif self.velocity_x < 0:
+                    self.hitbox.left = tile.right
+                    self.x = self.hitbox.left
+                    collision_types['left'] = True
 
         # Move vertically
         self.y += self.velocity_y
         self.hitbox.topleft = (self.x, self.y)
         self.hit_list = self.collision(tiles)
-        for tile in self.hit_list:
-            if self.velocity_y > 0:
-                self.hitbox.bottom = tile.top
-                self.y = self.hitbox.top
-                collision_types['bottom'] = True
-                self.velocity_y = 0
-                self.on_ground = True
-            elif self.velocity_y < 0:
-                self.hitbox.top = tile.bottom
-                self.y = self.hitbox.top
-                collision_types['top'] = True
-                self.velocity_y = 0
-
+        if len(self.hit_list) > 0:
+            for tile in self.hit_list:
+                if self.velocity_y > 0:
+                    self.hitbox.bottom = tile.top
+                    self.y = self.hitbox.top
+                    collision_types['bottom'] = True
+                    self.velocity_y = 0
+                    self.on_ground = True
+                elif self.velocity_y < 0:
+                    self.hitbox.top = tile.bottom
+                    self.y = self.hitbox.top
+                    collision_types['top'] = True
+                    self.velocity_y = 0
         self.on_ground = collision_types['bottom']
-        # Additional ground check:
-        if not collision_types['bottom']:
-            # Check if player is very close to the ground (within 2 pixels)
-            self.hitbox.y += 2  # shift hitbox 2 pixels down temporarily
-            close_to_ground = any(self.hitbox.colliderect(tile) for tile in tiles)
-            self.hitbox.y -= 2  # restore position
-            if close_to_ground:
-                collision_types['bottom'] = True
-                self.on_ground = True
-            else:
-                self.on_ground = False
-        else:
+        if collision_types['bottom']:
             self.on_ground = True
+            self.coyote_timer = pygame.time.get_ticks()  # reset coyote timer
+        else:
+            # If not on ground, check how long ago player was on ground
+            time_since_ground = pygame.time.get_ticks() - self.coyote_timer
+            self.coyote_enable = time_since_ground <= 200
+        # Additional ground check:
+        sensor_height = 2
+        sensor = pygame.Rect(self.hitbox.midbottom[0]-2.5, self.hitbox.bottom, 5, sensor_height)
+        close_to_ground = any(sensor.colliderect(tile) for tile in tiles)
+        # pygame.draw.rect(self.screen, (255, 0, 0),
+        # pygame.Rect(self.hitbox.midbottom[0]-2.5, int(self.hitbox.bottom), 5,sensor_height))
+
+        if collision_types['bottom'] or close_to_ground:
+            self.on_ground = True
+        else:
+            self.on_ground = False
         # Gravity and jump timer
         if not self.on_ground:
             self.jump_timer += 1
@@ -140,7 +161,8 @@ class Player:
                 self.hit_list.append(tile)
         return self.hit_list
     def jump(self):
-        if self.on_ground:
+        if self.on_ground or self.coyote_enable:
             self.velocity_y = 0
             self.velocity_y += self.jump_power
             self.on_ground = False
+
