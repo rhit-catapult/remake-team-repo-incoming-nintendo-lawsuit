@@ -18,8 +18,8 @@ platform_img = pygame.transform.scale(platform_img, (100, 30))
 class Player_test(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.Surface((40, 60))
-        self.image.fill((0, 0, 255))
+        self.image = pygame.image.load("SCH_Modulescaled.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (40, 60))  # Adjust size if needed
         self.rect = self.image.get_rect(topleft=(x, y))
         self.vel_y = 0
         self.jump = False
@@ -116,7 +116,7 @@ floating6 = Platform(400, 200, 100, 20)
 platforms.add(floating6)
 
 # Floating platform 7
-floating7 = Platform(700, 150, width, 20)
+floating7 = Platform(700, 150, 300, 20)
 platforms.add(floating7)
 
 # Create player and place it on top of the ground
@@ -200,33 +200,70 @@ enemies = pygame.sprite.Group()
 enemies.add(enemy1)
 enemies.add(enemy2)
 
-
-running = True
-while True:
-    screen.fill((255, 255, 255))
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-            pygame.quit()
-            sys.exit()
-
-    player_test.update(platforms)
-
-
-    player_group.draw(screen)
-    platforms.draw(screen)
-    enemies.draw(screen)
-    for enemy in enemies:
-        enemy.update(platforms)
-
-
+def show_game_over():
+    font = pygame.font.SysFont(None, 72)
+    text = font.render("Game Over", True, (255, 0, 0))
+    text_rect = text.get_rect(center=(width // 2, height // 2))
+    screen.blit(text, text_rect)
     pygame.display.flip()
-    clock.tick(60)
+    pygame.time.wait(2000)  # Pause for 2 seconds
 
 
+def run_game():
+    global player_test, player_group, enemies, platforms
+
+    # # Recreate game objects
+    # platforms = pygame.sprite.Group()
+    # ground = Platform(0, 0, width, 20, is_ground=True)
+    # ground.rect.bottom = height
+    # platforms.add(ground)
+    #
+    # column = Platform(0, 150, 50, height - 150)
+    # platforms.add(column)
+    #
+    # floating_platforms = [
+    #     (300, 470), (600, 470), (900, 470), (800, 350),
+    #     (500, 300), (400, 200), (700, 300)
+    # ]
+    # for x, y in floating_platforms:
+    #     platforms.add(Platform(x, y, 100, 20))
+    #
+    # player_test = Player_test(0, 0)
+    # player_test.rect.midbottom = column.rect.midtop
+    # player_group = pygame.sprite.Group(player_test)
+    #
+    # enemies = pygame.sprite.Group(
+    #     Enemy(300, ground.rect.top - 40),
+    #     Enemy(700, ground.rect.top - 40)
+    # )
 
 
+    running = True
+    while running:
+        screen.fill((255, 255, 255))
 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
+        # Update
+        player_test.update(platforms)
+        for enemy in enemies:
+            enemy.update(platforms)
 
+        # Collision detection
+        if pygame.sprite.spritecollideany(player_test, enemies):
+            show_game_over()
+            return  # Exit and allow game to restart
 
+        # Draw
+        player_group.draw(screen)
+        platforms.draw(screen)
+        enemies.draw(screen)
+
+        pygame.display.flip()
+        clock.tick(60)
+
+while True:
+    run_game()
