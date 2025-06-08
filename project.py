@@ -10,7 +10,7 @@ def main():
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("work pls")
     fps = pygame.time.Clock()
-    player = character.Player(screen, 500, 300)
+    player = character.Player(screen, 10, 10)
     player_speed = 5
     while True:
         for event in pygame.event.get():
@@ -29,17 +29,17 @@ def main():
                     player.velocity_x -= player_speed
                 if event.key == pygame.K_LEFT:
                     player.velocity_x += player_speed
-                if event.key == pygame.K_UP and not player.on_ground:
-                    player.jump_timer = 16
+                # if event.key == pygame.K_UP and not player.on_ground:
+                #     player.jump_timer = 16
 
         screen.fill((146, 244, 255))
-
-        tilemap_screen = pygame.transform.scale(tilemap.map_display, resolution)
         tilemap.rendermap()
+        tilemap_screen = tilemap.map_display
+       # tilemap_screen = pygame.transform.scale(tilemap.map_display, (2000,1200))
+        tilerects = tilemap.tile_rects
         screen.blit(tilemap_screen, (0, 0))
         player.draw()
-        player.move()
-        player.collision()
+        player.move(tilerects)
         pygame.display.update()
         fps.tick(120)
 main()
