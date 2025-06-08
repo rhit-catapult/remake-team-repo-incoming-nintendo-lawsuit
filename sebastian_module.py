@@ -64,6 +64,7 @@ class Player_test(pygame.sprite.Sprite):
             self.jump = True
 
 
+
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, width=None, height=None, is_ground=False):
         super().__init__()
