@@ -1,12 +1,16 @@
 import pygame
 class Player:
     def __init__(self, screen,x,y):
-        self.image_temporary = pygame.image.load("SCH_Modulescaled.png")
-        self.image_width = self.image_temporary.get_rect().width
-        self.image_height = self.image_temporary.get_rect().height
-        self.image = pygame.transform.scale(self.image_temporary, (self.image_width / 7.02, self.image_height / 7.02))
-        self.flipped_image = pygame.transform.flip(self.image, True, False)
-        self.rect = self.image.get_rect()
+        self.walk_right_images = [
+            self.scale_sprite_image("SCH_Modulescaled1.png"),
+            self.scale_sprite_image("SCH_Modulescaled2.png"),
+            self.scale_sprite_image("SCH_Modulescaled3.png"),
+            self.scale_sprite_image("SCH_Modulescaled4.png")]
+        self.walk_left_images = [pygame.transform.flip(img, True, False) for img in self.walk_right_images]
+        self.frame_index = 0
+        self.animation_timer = 0
+        self.animation_speed = 0.1
+        self.rect = self.walk_right_images[0].get_rect()
         self.screen = screen
         self.x = x
         self.y = y
@@ -22,31 +26,33 @@ class Player:
         self.coyote_timer = 0
         self.coyote_enable = False
         self.hitbox = pygame.Rect(self.x,self.y,31,50)
-    def draw(self, camera_x=0, camera_y=0):
-        # pygame.draw.rect(self.screen, (255, 0, 0), self.hitbox, 2) # shows player hitbox
-        # if self.velocity_x < 0:
-        #     self.screen.blit(self.flipped_image,(self.x,self.y))
-        #     self.facing_left = True
-        # elif self.velocity_x > 0:
-        #     self.screen.blit(self.image, (self.x, self.y))
-        #     self.facing_left = False
-        # elif self.facing_left:
-        #     self.screen.blit(self.flipped_image, (self.x, self.y))
-        # else:
-        #     self.screen.blit(self.image, (self.x, self.y))
-            draw_x = self.x - camera_x
-            draw_y = self.y - camera_y
+    def scale_sprite_image(self, image):
+        temp_image = pygame.image.load(image)
+        width = temp_image.get_rect().width
+        height = temp_image.get_rect().height
+        scaled_image = pygame.transform.scale(temp_image, (width / 7.02, height / 7.02))
+        return scaled_image
 
-            if self.velocity_x < 0:
-                self.screen.blit(self.flipped_image, (draw_x, draw_y))
-                self.facing_left = True
-            elif self.velocity_x > 0:
-                self.screen.blit(self.image, (draw_x, draw_y))
-                self.facing_left = False
-            elif self.facing_left:
-                self.screen.blit(self.flipped_image, (draw_x, draw_y))
-            else:
-                self.screen.blit(self.image, (draw_x, draw_y))
+    def draw(self, camera_x=0, camera_y=0):
+        draw_x = self.x - camera_x
+        draw_y = self.y - camera_y
+
+        if self.velocity_x != 0:
+            self.animation_timer += self.animation_speed
+            if self.animation_timer >= 1:
+                self.animation_timer = 0
+                self.frame_index = (self.frame_index + 1) % len(self.walk_right_images)
+        else:
+            self.frame_index = 0
+        if self.velocity_x < 0:
+            image = self.walk_left_images[self.frame_index]
+            self.facing_left = True
+        elif self.velocity_x > 0:
+            image = self.walk_right_images[self.frame_index]
+            self.facing_left = False
+        else:
+            image = self.walk_left_images[0] if self.facing_left else self.walk_right_images[0]
+        self.screen.blit(image, (draw_x, draw_y))
 
     # def move(self,tiles):
     #     collision_types = {'top': False, 'bottom': False, 'left': False, 'right': False}
@@ -96,7 +102,7 @@ class Player:
             for tile in self.hit_list:
                 if self.velocity_x > 0:
                     self.hitbox.right = tile.left
-                    self.x = self.hitbox.left  # Correct position
+                    self.x = self.hitbox.left
                     collision_types['right'] = True
                 elif self.velocity_x < 0:
                     self.hitbox.left = tile.right
@@ -121,24 +127,19 @@ class Player:
                     collision_types['top'] = True
                     self.velocity_y = 0
         self.on_ground = collision_types['bottom']
-        if collision_types['bottom']:
-            self.on_ground = True
-            self.coyote_timer = pygame.time.get_ticks()  # reset coyote timer
-        else:
-            # If not on ground, check how long ago player was on ground
-            self.coyote_enable = pygame.time.get_ticks() - self.coyote_timer <= 200
+
         # Additional ground check:
         sensor_height = 2
         sensor = pygame.Rect(self.hitbox.midbottom[0]-2.5, self.hitbox.bottom, 5, sensor_height)
         close_to_ground = any(sensor.colliderect(tile) for tile in tiles)
         # pygame.draw.rect(self.screen, (255, 0, 0),
         # pygame.Rect(self.hitbox.midbottom[0]-2.5, int(self.hitbox.bottom), 5,sensor_height)) # hitbox draw
-
         if collision_types['bottom'] or close_to_ground:
             self.on_ground = True
+            self.coyote_timer = pygame.time.get_ticks()
         else:
             self.on_ground = False
-        # Gravity and jump timer
+            self.coyote_enable = pygame.time.get_ticks() - self.coyote_timer <= 200
         if not self.on_ground:
             self.jump_timer += 1
             if self.jump_timer > 15:

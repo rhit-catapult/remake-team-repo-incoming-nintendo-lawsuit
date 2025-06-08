@@ -35,15 +35,9 @@ def main():
 
         screen.fill((146, 244, 255))
         tilemap.rendermap()
-        #tilemap_screen = tilemap.map_display
-       # tilemap_screen = pygame.transform.scale(tilemap.map_display, (2000,1200))
-       # tilerects = tilemap.tile_rects
-       # screen.blit(tilemap_screen, (0, 0)) # NONCAMERA
-       # player.draw()
-        #player.move(tilerects)
         camera_x, camera_y = camera.scroll_camera(player.hitbox, resolution[0], resolution[1], 7000, 7000)
         tilemap_screen = tilemap.map_display
-        screen.blit(tilemap_screen, (-camera_x, -camera_y))  # <-- Use offset here!
+        screen.blit(tilemap_screen, (-camera_x, -camera_y))
         tilerects = tilemap.tile_rects
         player.move(tilerects)
         player.draw(camera_x, camera_y)
