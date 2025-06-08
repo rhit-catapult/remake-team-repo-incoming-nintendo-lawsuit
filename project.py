@@ -1,17 +1,17 @@
 import pygame
 import sys
 import character
+import tiletest as tilemap
 
 
 def main():
     pygame.init()
-    resolution = (960, 640)
+    resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("work pls")
     fps = pygame.time.Clock()
     player = character.Player(screen, 500, 300)
     player_speed = 5
-    move_left = False
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -32,8 +32,11 @@ def main():
                 if event.key == pygame.K_UP and not player.on_ground:
                     player.jump_timer = 16
 
-        screen.fill((255, 255, 255))
-        pygame.draw.rect(screen, (1, 50, 32), (0, screen.get_height() - 250, screen.get_width(), 250))
+        screen.fill((146, 244, 255))
+
+        tilemap_screen = pygame.transform.scale(tilemap.map_display, resolution)
+        tilemap.rendermap()
+        screen.blit(tilemap_screen, (0, 0))
         player.draw()
         player.move()
         player.collision()

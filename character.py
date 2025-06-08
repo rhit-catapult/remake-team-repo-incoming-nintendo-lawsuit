@@ -2,10 +2,10 @@ import pygame
 
 class Player:
     def __init__(self, screen,x,y):
-        self.image_temporary = pygame.image.load("SCH_Module.png")
+        self.image_temporary = pygame.image.load("SCH_Modulescaled.png")
         self.image_width = self.image_temporary.get_rect().width
         self.image_height = self.image_temporary.get_rect().height
-        self.image = pygame.transform.scale(self.image_temporary, (self.image_width / 7.5, self.image_height / 7.5))
+        self.image = pygame.transform.scale(self.image_temporary, (self.image_width / 7.02, self.image_height / 7.02))
         self.flipped_image = pygame.transform.flip(self.image, True, False)
         self.rect = self.image.get_rect()
         self.screen = screen
@@ -19,7 +19,7 @@ class Player:
         self.jump_time = 0
         self.jump_timer = 0
         self.facing_left = False
-        self.hitbox = (self.x,self.y,self.x+46,self.y+50)
+        self.hitbox = (self.x,self.y,self.x+31,self.y+50)
     def draw(self):
         if self.velocity_x < 0:
             self.screen.blit(self.flipped_image,(self.x,self.y))
@@ -57,7 +57,7 @@ class Player:
             self.on_ground = False
 # def test():
 #     pygame.init()
-#     resolution = (1000,600)
+#     resolution = (960,640)
 #     screen = pygame.display.set_mode(resolution)
 #     fps = pygame.time.Clock()
 #     player = Player(screen,500,300)
