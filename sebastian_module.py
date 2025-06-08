@@ -59,7 +59,7 @@ class Player_test(pygame.sprite.Sprite):
                 self.vel_y = 0
 
         if keys[pygame.K_SPACE] and not self.jump:
-            self.vel_y = -10
+            self.vel_y = -12
             self.jump = True
 
 
@@ -88,6 +88,38 @@ column_y = 150
 column_height = height - column_y
 column = Platform(column_x, column_y, 50, column_height)
 platforms.add(column)
+
+# Floating platform 1
+floating1 = Platform(300, 470, 100, 20)  # x=200, y=400, width=100, height=20
+platforms.add(floating1)
+
+# Floating platform 2
+floating2 = Platform(600, 470, 100, 20)
+platforms.add(floating2)
+
+# Floating platform 3
+floating3 = Platform(900, 470, 100, 20)
+platforms.add(floating3)
+
+# Floating platform 4
+floating4 = Platform(800, 350, 100, 20)
+platforms.add(floating4)
+
+# Floating platform 5
+floating5 = Platform(500, 300, 100, 20)
+platforms.add(floating5)
+
+# Floating platform 6
+floating6 = Platform(400, 200, 100, 20)
+platforms.add(floating6)
+
+# Floating platform 7
+floating7 = Platform(700, 150, width, 20)
+platforms.add(floating7)
+
+# ground = Platform(0, 0, width)
+# ground.rect.bottom = height
+# platforms.add(ground)
 
 # Select a specific platform (e.g. the vertical column or the ground)
 # For example, let's spawn the player on top of the ground:
