@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 
 #initialize
@@ -64,7 +65,7 @@ class Player_test(pygame.sprite.Sprite):
 
 
 class Platform(pygame.sprite.Sprite):
-    def __init__(self, x, y, width=None, height=None):
+    def __init__(self, x, y, width=None, height=None, is_ground=False):
         super().__init__()
         self.image = platform_img.copy()
         if width is None:
@@ -73,12 +74,13 @@ class Platform(pygame.sprite.Sprite):
             height = self.image.get_height()
         self.image = pygame.transform.scale(self.image, (width, height))
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.is_ground = is_ground
 
 # 5. Define and add platforms here — THIS IS WHERE YOUR CODE GOES
 platforms = pygame.sprite.Group()
 
 # Ground platform
-ground = Platform(0, 0, width)
+ground = Platform(0, 0, width, 20, is_ground=True)
 ground.rect.bottom = height
 platforms.add(ground)
 
@@ -117,21 +119,87 @@ platforms.add(floating6)
 floating7 = Platform(700, 150, width, 20)
 platforms.add(floating7)
 
-# ground = Platform(0, 0, width)
-# ground.rect.bottom = height
-# platforms.add(ground)
-
-# Select a specific platform (e.g. the vertical column or the ground)
-# For example, let's spawn the player on top of the ground:
-ground = Platform(0, 0, width)
-ground.rect.bottom = height
-platforms.add(ground)
-
 # Create player and place it on top of the ground
 player_test = Player_test(0, 0)
 player_test.rect.midbottom = column.rect.midtop
 
 player_group = pygame.sprite.Group(player_test)
+
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, x, y, distance=100, speed=2):
+        super().__init__()
+        self.image = pygame.Surface((40, 40))
+        self.image.fill((255, 0, 0))
+        self.rect = self.image.get_rect(topleft=(x, y))
+
+        self.start_x = x
+        self.distance = distance
+        self.speed = speed
+
+        self.vel_y = 0
+        self.jump = False
+        self.jump_timer = random.randint(60, 180)  # frames until next jump
+
+        # --- New attributes for staying-on-platform tracking ---
+        self.platform_timer = 0               # How long on floating platform
+        self.max_platform_time = 180          # Max allowed (in frames)
+
+    def update(self, platforms):
+        # Horizontal movement
+        self.rect.x += self.speed
+        if self.rect.x > self.start_x + self.distance:
+            self.speed = -abs(self.speed)
+        elif self.rect.x < self.start_x:
+            self.speed = abs(self.speed)
+
+        # Gravity
+        self.vel_y += 0.5
+        self.rect.y += self.vel_y
+
+        on_platform = False
+        standing_on_ground = False
+
+        for platform in platforms:
+            if self.rect.colliderect(platform.rect):
+                if self.vel_y > 0 and self.rect.bottom <= platform.rect.bottom:
+                    self.rect.bottom = platform.rect.top
+                    self.vel_y = 0
+                    self.jump = False
+                    on_platform = True
+
+                    if platform.is_ground:
+                        self.platform_timer = 0  # reset timer if on ground
+                        standing_on_ground = True
+                    else:
+                        self.platform_timer += 1
+
+        # Jump timer logic
+        self.jump_timer -= 1
+        if self.jump_timer <= 0 and not self.jump and on_platform:
+            self.vel_y = -10
+            self.jump = True
+            self.jump_timer = random.randint(60, 180)
+
+        # Drop-down if stuck on floating platform too long
+        if on_platform and not standing_on_ground and self.platform_timer > self.max_platform_time:
+            self.vel_y = 5  # force fall
+            self.jump = True
+
+# Ground platform
+
+ground = Platform(0, 0, width, 20, is_ground=True)
+ground.rect.bottom = height
+platforms.add(ground)
+
+
+# Add enemy on top of ground
+enemy1 = Enemy(300, ground.rect.top - 40)  # 40 is the height of the enemy
+enemy2 = Enemy(700, ground.rect.top - 40)  # 40 is the height of the enemy
+
+enemies = pygame.sprite.Group()
+enemies.add(enemy1)
+enemies.add(enemy2)
+
 
 running = True
 while True:
@@ -147,6 +215,10 @@ while True:
 
     player_group.draw(screen)
     platforms.draw(screen)
+    enemies.draw(screen)
+    for enemy in enemies:
+        enemy.update(platforms)
+
 
     pygame.display.flip()
     clock.tick(60)
