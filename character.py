@@ -1,6 +1,8 @@
 import pygame
 class Player:
     def __init__(self, screen,x,y):
+        self.jump_image = self.scale_sprite_image("SCH_ModulescaledJ.png")
+        self.jump_left_image = pygame.transform.flip(self.jump_image, True, False)
         self.walk_right_images = [
             self.scale_sprite_image("SCH_Modulescaled1.png"),
             self.scale_sprite_image("SCH_Modulescaled2.png"),
@@ -37,14 +39,23 @@ class Player:
         draw_x = self.x - camera_x
         draw_y = self.y - camera_y
 
-        if self.velocity_x != 0:
+        if self.velocity_x != 0 and self.on_ground:
             self.animation_timer += self.animation_speed
             if self.animation_timer >= 1:
                 self.animation_timer = 0
                 self.frame_index = (self.frame_index + 1) % len(self.walk_right_images)
         else:
             self.frame_index = 0
-        if self.velocity_x < 0:
+        if not self.on_ground:
+            if self.velocity_x > 0:
+                image = self.jump_image
+                self.facing_left = False
+            if self.velocity_x < 0:
+                image = self.jump_left_image
+                self.facing_left = True
+            if self.velocity_x == 0:
+                image = self.jump_left_image if self.facing_left else self.jump_image
+        elif self.velocity_x < 0:
             image = self.walk_left_images[self.frame_index]
             self.facing_left = True
         elif self.velocity_x > 0:
