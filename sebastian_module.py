@@ -1,85 +1,128 @@
 import pygame
 import sys
-import time
 
-class Player:
-    def __init__(self, screen,x,y):
-        self.imagetemp = pygame.image.load("SCH_Module.png")
-        self.imagewidth = self.imagetemp.get_rect().width
-        self.imageheight = self.imagetemp.get_rect().height
-        self.image = pygame.transform.scale(self.imagetemp, (self.imagewidth / 7.5, self.imageheight / 7.5))
-        self.rect = self.image.get_rect()
-        self.screen = screen
-        self.x = x
-        self.y = y
-        self.gravity = .25
-        self.velocity_y = 0
-        self.velocity_x = 0
-        self.on_ground = True
-        self.jump_time = 0
-        self.hitbox = (self.x,self.y,self.x+46,self.y+50)
-    def draw(self,screen):
-        screen.blit(self.image, (self.x, self.y))
-        #pygame.rect(self.hitbox)
-    def move(self):
-        self.x += self.velocity_x
-        self.y += self.velocity_y
-        self.hitbox = (self.x, self.y)
-    def collision(self):
-        if self.y + 50 > self.screen.get_height() - 50:
-            self.y = self.screen.get_height() - 100
-            self.velocity_y = 0
-            self.on_ground = True
-    def jump(self, jump_power):
-        if self.on_ground:
-            self.velocity_y += jump_power
-            self.on_ground = False
 
-def test():
-    pygame.init()
-    resolution = (1000,600)
-    screen = pygame.display.set_mode(resolution)
-    fps = pygame.time.Clock()
+#initialize
+pygame.init()
+width = 1000
+height = 600
+screen = pygame.display.set_mode((width, height))
+white = (255, 255, 255)
+pygame.display.set_caption('Game')
 
-    player = Player(screen,500,300)
-    player_speed = 5
-    player_jump_power = 6
-    jump_timer = 0
-    jump_premature = 0
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    player.velocity_x += player_speed
-                if event.key == pygame.K_LEFT:
-                    player.velocity_x += -player_speed
-                if event.key == pygame.K_UP:
-                    player.jump_time = pygame.time.get_ticks()
-                    player.jump(-player_jump_power)
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_RIGHT:
-                    player.velocity_x -= player_speed
-                if event.key == pygame.K_LEFT:
-                    player.velocity_x += player_speed
+clock = pygame.time.Clock()
+platform_img = pygame.image.load("grass-pl.png").convert_alpha()
+platform_img = pygame.transform.scale(platform_img, (100, 30))
 
-        screen.fill((255,255,255))
-        if not player.on_ground:
-            jump_timer += 1
-            if jump_timer > 15:
-                player.velocity_y += player.gravity
-                if player.velocity_y > 5:
-                    player.velocity_y = 5
-        else:
-            jump_timer = 0
-        if player.jump_time + 200 > pygame.time.get_ticks() and player.on_ground:
-            player.jump(-player_jump_power)
-        print(jump_timer)
-        pygame.draw.rect(screen, (1, 50, 32), (0, screen.get_height() - 50, screen.get_width(), 50))
-        player.draw(screen)
-        player.move()
-        player.collision()
-        pygame.display.update()
-        fps.tick(120)
-test()
+class Player_test(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.Surface((40, 60))
+        self.image.fill((0, 0, 255))
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.vel_y = 0
+        self.jump = False
+
+    def update(self, platforms):
+        keys = pygame.key.get_pressed()
+
+        dx = 0
+        dy = self.vel_y
+
+        if keys[pygame.K_LEFT]:
+            dx = -5
+        if keys[pygame.K_RIGHT]:
+            dx = 5
+
+        # --- Horizontal collision ---
+        self.rect.x += dx
+        hits = pygame.sprite.spritecollide(self, platforms, False)
+        for platform in hits:
+            if dx > 0:  # Moving right
+                self.rect.right = platform.rect.left
+            elif dx < 0:  # Moving left
+                self.rect.left = platform.rect.right
+
+        # --- Vertical movement ---
+        self.vel_y += 0.5  # gravity
+        self.rect.y += self.vel_y
+
+        # --- Vertical collision ---
+        hits = pygame.sprite.spritecollide(self, platforms, False)
+        for platform in hits:
+            if self.vel_y > 0:  # Falling
+                self.rect.bottom = platform.rect.top
+                self.vel_y = 0
+                self.jump = False
+            elif self.vel_y < 0:  # Jumping up
+                self.rect.top = platform.rect.bottom
+                self.vel_y = 0
+
+        if keys[pygame.K_SPACE] and not self.jump:
+            self.vel_y = -10
+            self.jump = True
+
+
+class Platform(pygame.sprite.Sprite):
+    def __init__(self, x, y, width=None, height=None):
+        super().__init__()
+        self.image = platform_img.copy()
+        if width is None:
+            width = self.image.get_width()
+        if height is None:
+            height = self.image.get_height()
+        self.image = pygame.transform.scale(self.image, (width, height))
+        self.rect = self.image.get_rect(topleft=(x, y))
+
+# 5. Define and add platforms here — THIS IS WHERE YOUR CODE GOES
+platforms = pygame.sprite.Group()
+
+# Ground platform
+ground = Platform(0, 0, width)
+ground.rect.bottom = height
+platforms.add(ground)
+
+# Vertical platform from y=150 to ground
+column_x = 0
+column_y = 150
+column_height = height - column_y
+column = Platform(column_x, column_y, 50, column_height)
+platforms.add(column)
+
+# Select a specific platform (e.g. the vertical column or the ground)
+# For example, let's spawn the player on top of the ground:
+ground = Platform(0, 0, width)
+ground.rect.bottom = height
+platforms.add(ground)
+
+# Create player and place it on top of the ground
+player_test = Player_test(0, 0)
+player_test.rect.midbottom = column.rect.midtop
+
+player_group = pygame.sprite.Group(player_test)
+
+running = True
+while True:
+    screen.fill((255, 255, 255))
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+            pygame.quit()
+            sys.exit()
+
+    player_test.update(platforms)
+
+
+    player_group.draw(screen)
+    platforms.draw(screen)
+
+    pygame.display.flip()
+    clock.tick(60)
+
+
+
+
+
+
+
+
