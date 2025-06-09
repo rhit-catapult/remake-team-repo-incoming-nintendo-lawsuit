@@ -74,15 +74,14 @@ class Enemy(pygame.sprite.Sprite):
             self.jump = True
 
 def game_over(screen, resolution):
-    font = pygame.font.SysFont(None, 80)
-    text = font.render("GAME OVER", True, (255, 0, 0))
+    font = pygame.font.SysFont("segoeuiemoji", 80)
+    text = font.render("🐒🐒🐒🐒🐒🐒", True, (255, 0, 0))
     text_rect = text.get_rect(center=(resolution[0] // 2, resolution[1] // 2))
 
     screen.fill((0, 0, 0))
     screen.blit(text, text_rect)
     pygame.display.update()
-
-    pygame.time.delay(3000)
+    pygame.time.delay(500)
     pygame.event.clear()  # Clear input events# Wait 3 seconds
 
 def main():
@@ -101,7 +100,6 @@ def main():
 
         enemy_list = [Enemy(300, 4700), Enemy(600, 4700)]
         enemies = pygame.sprite.Group(*enemy_list)
-
         running = True
         while running:
             for event in pygame.event.get():
@@ -137,7 +135,10 @@ def main():
                 enemy.update(tilerects)
                 screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
 
-            # Check collision
+            if player.y > 6000:
+                game_over(screen, resolution)
+                running = False
+                break
             for enemy in enemies:
                 if player.hitbox.colliderect(enemy.rect):
                     game_over(screen, resolution)
@@ -145,6 +146,7 @@ def main():
                     break
 
             pygame.display.update()
+            print(player.x, player.y)
             fps.tick(90)
 
 main()

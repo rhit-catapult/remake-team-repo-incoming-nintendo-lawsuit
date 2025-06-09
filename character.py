@@ -1,7 +1,7 @@
 import pygame
 class Player:
     def __init__(self, screen,x,y):
-        self.jump_image = self.scale_sprite_image("SCH_ModulescaledJ.png")
+        self.jump_image = self.scale_sprite_image("Nur_Jump.png")
         self.jump_left_image = pygame.transform.flip(self.jump_image, True, False)
         self.walk_right_images = [
             self.scale_sprite_image("Nur_Walking_1.png"),
