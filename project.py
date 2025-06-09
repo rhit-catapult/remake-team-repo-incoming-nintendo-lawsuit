@@ -3,6 +3,7 @@ import sys
 import character
 import parkourmaptiling as tilemap
 import camera
+import random
 import coin
 
 class Enemy(pygame.sprite.Sprite):
