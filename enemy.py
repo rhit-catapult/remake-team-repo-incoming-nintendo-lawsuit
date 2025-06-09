@@ -30,8 +30,9 @@ class Enemy(pygame.sprite.Sprite):
         self.flattened = False
         self.platform_timer = 0
         self.max_platform_time = 180
+        self.remove_timer = 0
 
-    def update(self, platforms):
+    def update(self, platforms,enemies):
         # Horizontal movement & boundaries
         if not self.flattened:
             self.rect.x += self.vel_x
@@ -83,6 +84,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.vel_y = 5
                 self.Ejump = True
         else:
+            self.remove_timer += 1
             self.vel_y += 0.5
             dy = self.vel_y
             step = 1 if dy > 0 else -1
@@ -93,7 +95,8 @@ class Enemy(pygame.sprite.Sprite):
                 for platform in platforms:
                     if self.rect.colliderect(platform):
                         if step > 0: #a
-                            self.rect.bottom = platform.top + self.image.get_height() - 7
+                            self.rect.top = platform.top - 3
                             self.vel_y = 0
-                            self.jump = False
                         break
+            if self.remove_timer >= 500:
+                enemies.remove(self)
