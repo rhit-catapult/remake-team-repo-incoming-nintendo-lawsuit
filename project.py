@@ -129,6 +129,8 @@ def main():
         enemy_list = [Enemy(1315, 5500),Enemy(1415, 5500), Enemy(1615, 5500),Enemy(1815, 5500), Enemy(1915,5500),Enemy(2215, 5500)]
         enemies = pygame.sprite.Group(*enemy_list)
         running = True
+        score = 0
+        font = pygame.font.SysFont(None, 40)
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -176,11 +178,16 @@ def main():
                         enemy_smash_jump = pygame.time.get_ticks()
                         player.enemy_bounce = True
                         player.jump()
+                        score += 100
 
                     if player.velocity_y <= 0 and enemy.flattened == False:
                         game_over(screen, resolution)
                         running = False
                         break
+
+            score_text = font.render(f"Score: {score}", True, (0, 0, 0))
+            screen.blit(score_text, (20, 20))
+
             pygame.display.update()
             print(player.idle_time)
             fps.tick(90)
