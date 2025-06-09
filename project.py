@@ -85,7 +85,7 @@ class Enemy(pygame.sprite.Sprite):
 
                 for platform in platforms:
                     if self.rect.colliderect(platform):
-                        if step > 0:
+                        if step > 0: #a
                             self.rect.bottom = platform.top + 45
                             self.vel_y = 0
                             self.jump = False
