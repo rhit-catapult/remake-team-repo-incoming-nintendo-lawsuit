@@ -4,14 +4,15 @@ class Player:
         self.jump_image = self.scale_sprite_image("SCH_ModulescaledJ.png")
         self.jump_left_image = pygame.transform.flip(self.jump_image, True, False)
         self.walk_right_images = [
-            self.scale_sprite_image("SCH_Modulescaled1.png"),
-            self.scale_sprite_image("SCH_Modulescaled2.png"),
-            self.scale_sprite_image("SCH_Modulescaled3.png"),
-            self.scale_sprite_image("SCH_Modulescaled4.png")]
+            self.scale_sprite_image("Nur_Walking_1.png"),
+            self.scale_sprite_image("Nur_Walking_2.png"),
+            self.scale_sprite_image("Nur_Walking_1.png"),
+            self.scale_sprite_image("Nur_Walking_3.png")
+        ]
         self.walk_left_images = [pygame.transform.flip(img, True, False) for img in self.walk_right_images]
         self.frame_index = 0
         self.animation_timer = 0
-        self.animation_speed = 0.1
+        self.animation_speed = 1
         self.rect = self.walk_right_images[0].get_rect()
         self.screen = screen
         self.x = x
@@ -104,9 +105,9 @@ class Player:
 # CHATGPT VERSION (MUCH BETTER FUNCTIONALLY THAN MINE - 2 HOURS OF FAILURE)
     def move(self, tiles):
         collision_types = {'top': False, 'bottom': False, 'left': False, 'right': False}
-        if self.y > 5700:
-            self.x = 50
-            self.y = 4700
+        # if self.y > 5700:
+        #     self.x = 50
+        #     self.y = 4700
         # Move horizontally
         self.x += self.velocity_x
         self.hitbox.topleft = (self.x, self.y)

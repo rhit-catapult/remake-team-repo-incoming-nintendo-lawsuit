@@ -80,7 +80,7 @@ def main():
     pygame.display.set_caption("work pls")
     fps = pygame.time.Clock()
     player = character.Player(screen, 50, 4700)
-    player_speed = 5
+    player_speed = 50
 
 
     tilemap.rendermap()  # Make sure map is rendered now that display exists
