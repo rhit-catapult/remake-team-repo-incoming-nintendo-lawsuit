@@ -104,7 +104,9 @@ class Player:
 # CHATGPT VERSION (MUCH BETTER FUNCTIONALLY THAN MINE - 2 HOURS OF FAILURE)
     def move(self, tiles):
         collision_types = {'top': False, 'bottom': False, 'left': False, 'right': False}
-
+        if self.y > 5700:
+            self.x = 50
+            self.y = 4700
         # Move horizontally
         self.x += self.velocity_x
         self.hitbox.topleft = (self.x, self.y)
@@ -176,4 +178,6 @@ class Player:
             self.velocity_y = 0
             self.velocity_y += self.jump_power
             self.on_ground = False
+    def enemy_collision(self, enemies):
+        pass
 

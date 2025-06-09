@@ -10,18 +10,21 @@ barrier_image = pygame.transform.scale(air_image_raw, (tilesize, tilesize))
 map_display = pygame.Surface((7500,7500))
 map_yoffset = 5000
 game_map = [
+[3] + [0]*20 + [2]*5 + [0]*119+ [3],
+[3] + [0]*139+ [3],
+[3] + [0]*139+ [3],
 [3] + [0]*15 + [2]*5 + [0]*119+ [3],
 [3] + [0]*139+ [3],
 [3] + [0]*139+ [3],
 [3] + [0]*10 + [2]*5 + [0]*124+ [3],
 [3] + [0]*139 + [3],
-[3] + [2]*140,
-[3] + [1]*140,
-[3] + [1]*140,
-[3] + [1]*140,
-[3] + [1]*140,
-[3] + [1]*140,
-[3] + [1]*140
+[3] + [2]*40 + [0]*5 + [2]*135,
+[3] + [1]*40 + [0]*5 + [1]*135,
+[3] + [1]*40 + [0]*5 + [1]*135,
+[3] + [1]*40 + [0]*5 + [1]*135,
+[3] + [1]*40 + [0]*5 + [1]*135,
+[3] + [1]*40 + [0]*5 + [1]*135,
+[3] + [1]*40 + [0]*5 + [1]*135,
 ]
 def rendermap():
     global tile_rects
@@ -42,5 +45,5 @@ def rendermap():
                 map_display.blit(barrier_image, (x*tilesize, y*tilesize+map_yoffset)) # INVISIBLE WALL
             x += 1
         y += 1
-    # for tile in tile_rects:  # tile hitboxes
-    #     pygame.draw.rect(map_display, (0, 255, 0), tile, 1)
+    for tile in tile_rects:  # tile hitboxes
+        pygame.draw.rect(map_display, (0, 255, 0), tile, 1)

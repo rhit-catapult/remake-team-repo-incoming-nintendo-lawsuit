@@ -134,6 +134,7 @@ def main():
             screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
         player.move(tilerects)
         player.draw(camera_x, camera_y)
+        player.enemy_collision(enemies)
         pygame.display.update()
         fps.tick(90)
 main()
