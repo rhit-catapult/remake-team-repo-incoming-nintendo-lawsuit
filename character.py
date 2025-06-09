@@ -1,5 +1,4 @@
 import pygame
-import random
 class Player:
     def __init__(self, screen,x,y):
         self.jump_image = self.scale_sprite_image("Nur_Jump.png")
@@ -69,10 +68,8 @@ class Player:
             self.facing_left = False
         else:
             image = self.walk_left_images[0] if self.facing_left else self.walk_right_images[0]
-        if self.idle_time > 900:
+        if 930 > self.idle_time > 900:
             image = self.idle_image
-            if self.idle_time > 902:
-                image = self.walk_right_images[self.frame_index]
         self.screen.blit(image, (draw_x, draw_y))
 
     # def move(self,tiles):
