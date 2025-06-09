@@ -4,6 +4,7 @@ import character
 import parkourmaptiling as tilemap
 import camera
 import random
+import coin
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -133,6 +134,17 @@ def main():
         running = True
         score = 0
         font = pygame.font.SysFont(None, 40)
+
+        coin_list = [coin.Coin(800, 5200),
+                     coin.Coin(650, 5500),
+                     coin.Coin(500, 5200),
+                     coin.Coin(1350, 5300),
+                     coin.Coin(1750, 5300),
+                     coin.Coin(2150, 5300),
+                     coin.Coin(2500, 5300)
+                     ]
+        coins = pygame.sprite.Group(*coin_list)
+
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -189,6 +201,14 @@ def main():
 
             score_text = font.render(f"Score: {score}", True, (0, 0, 0))
             screen.blit(score_text, (20, 20))
+
+            for c in coins:
+                c.draw(screen, camera_x, camera_y)
+
+            for c in coins.copy():
+                if player.hitbox.colliderect(c.rect):
+                    score += 50
+                    coins.remove(c)
 
             pygame.display.update()
             print(player.idle_time)
