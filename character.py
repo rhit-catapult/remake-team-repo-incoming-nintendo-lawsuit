@@ -9,6 +9,9 @@ class Player:
             self.scale_sprite_image("Nur_Walking_1.png"),
             self.scale_sprite_image("Nur_Walking_3.png")
         ]
+        self.idle_image = self.scale_sprite_image("Nur_Jump.png")
+        self.last_movement = 0
+        self.idle_time = 0
         self.walk_left_images = [pygame.transform.flip(img, True, False) for img in self.walk_right_images]
         self.frame_index = 0
         self.animation_timer = 0
@@ -28,6 +31,7 @@ class Player:
         self.hit_list = []
         self.coyote_timer = 0
         self.coyote_enable = False
+        self.enemy_bounce = False
         self.hitbox = pygame.Rect(self.x,self.y,31,50)
     def scale_sprite_image(self, image):
         temp_image = pygame.image.load(image)
@@ -64,6 +68,8 @@ class Player:
             self.facing_left = False
         else:
             image = self.walk_left_images[0] if self.facing_left else self.walk_right_images[0]
+        if 930 > self.idle_time > 900:
+            image = self.idle_image
         self.screen.blit(image, (draw_x, draw_y))
 
     # def move(self,tiles):
@@ -108,7 +114,13 @@ class Player:
         # if self.y > 5700:
         #     self.x = 50
         #     self.y = 4700
-        # Move horizontally
+        if self.velocity_x == 0 and self.on_ground:
+            self.last_movement += 1
+            if self.last_movement >= 600:
+                self.idle_time += 1
+        else:
+            self.last_movement = 0
+            self.idle_time = 0
         self.x += self.velocity_x
         self.hitbox.topleft = (self.x, self.y)
         self.hit_list = self.collision(tiles)
@@ -166,7 +178,6 @@ class Player:
         # Jump when jump timer and on ground conditions met
         if self.jump_time + 200 > pygame.time.get_ticks() and self.on_ground:
             self.jump()
-
         self.hitbox.topleft = (self.x, self.y)
     def collision(self, tiles):
         self.hit_list = []
@@ -175,7 +186,7 @@ class Player:
                 self.hit_list.append(tile)
         return self.hit_list
     def jump(self):
-        if self.on_ground or self.coyote_enable:
+        if self.on_ground or self.coyote_enable or self.enemy_bounce:
             self.velocity_y = 0
             self.velocity_y += self.jump_power
             self.on_ground = False

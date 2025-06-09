@@ -1,11 +1,12 @@
 import pygame
 
 tile_rects = []
+lava_rects = []
 tilesize = 50
 grass_image_raw = pygame.image.load("Dirt_Grass_Block2.png")
 dirt_image_raw = pygame.image.load("Dirt_Block2.png")
 air_image_raw = pygame.image.load("air_tile.png")
-lava_image_raw = pygame.image.load("lava_tile.png")
+lava_image_raw = pygame.image.load("lava_2.png")
 dirt_image = pygame.transform.scale(dirt_image_raw, (tilesize, tilesize))
 grass_image = pygame.transform.scale(grass_image_raw, (tilesize, tilesize))
 barrier_image = pygame.transform.scale(air_image_raw, (tilesize, tilesize))
@@ -18,13 +19,12 @@ game_map = [
 [3] + [0]*139+ [3],
 [3] + [0]*139+ [3],
 [3] + [0]*139+ [3],
-[3] + [1]*139+ [3],
+[3] + [0]*139+ [3],
 [3] + [2]*2 + [0]*137+ [3],
 [3] + [1]*2 + [0]*24 + [2]*9 + [0]*5 + [2]*10 + [0]*107 + [3],
 [3] + [1]*2 + [0]*5 + [2]*10 + [0]*8 + [2] + [1]*9 + [0]*5 + [1]*10 +[0]*107 + [3],
 [3] + [1]*2 + [0]*5 + [1]*10 + [0]*132 + [3],
 [3] + [1]*2 + [0]*137 + [3],
-[3] + [4]*200,
 [3] + [1]*2 + [2]*23  + [0]*25  + [2]*95 + [3],
 [3] + [1]*25 + [0]*25 + [1]*95 + [3],
 [3] + [1]*25 + [0]*23 + [2]*2 + [1]*95 + [3],
@@ -36,23 +36,21 @@ game_map = [
 
 
 def rendermap():
-    global tile_rects
+    global tile_rects, lava_rects
     tile_rects = []
+    lava_rects = []
     map_display.fill((146, 244, 255))
     y = 0
 
     for row in game_map:
         x = 0
         for tile in row:
-            if tile != 0:
+            if tile == 4:
+                rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
+                lava_rects.append(rect)
+            elif tile != 0:
                 rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
                 tile_rects.append(rect)
-
-                # Add special property for lava blocks
-                if tile == 4:
-                    rect.is_lava = True
-                else:
-                    rect.is_lava = False
 
             if tile == 1:
                 map_display.blit(dirt_image, (x * tilesize, y * tilesize + map_yoffset))
