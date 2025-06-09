@@ -14,16 +14,16 @@ class Enemy(pygame.sprite.Sprite):
 
             self.image = pygame.transform.scale(
                 pygame.image.load("Gumba_Enemy.png").convert_alpha(),
-                (45, 60)
+                (40, 50)
             )
         elif r== 1:
             self.image = pygame.transform.scale(
                 pygame.image.load("Glumbas_Enemy.png").convert_alpha(),
-                (30, 50)
+                (50, 50)
             )
         elif r==2:
             self.image = pygame.transform.scale(pygame.image.load("Eggumbo.png").convert_alpha(),
-            (30,50))
+            (65,65))
         self.rect = self.image.get_rect(topleft=(x, y))
 
         self.start_x = x
@@ -116,7 +116,6 @@ def game_over(screen, resolution):
 
 def main():
     pygame.init()
-    player_invincible = False
     resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("work pls")
@@ -213,7 +212,6 @@ def main():
                 if player.hitbox.colliderect(c.rect):
                     score += 50
                     coins.remove(c)
-            print(player_invincible)
             pygame.display.update()
             fps.tick(90)
 main()
