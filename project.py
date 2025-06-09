@@ -4,6 +4,7 @@ import character
 import parkourmaptiling as tilemap
 import camera
 import random
+import coin
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -13,7 +14,7 @@ class Enemy(pygame.sprite.Sprite):
 
             self.image = pygame.transform.scale(
                 pygame.image.load("Gumba_Enemy.png").convert_alpha(),
-                (30, 50)
+                (60, 100)
             )
         elif r== 1:
             self.image = pygame.transform.scale(
@@ -21,7 +22,8 @@ class Enemy(pygame.sprite.Sprite):
                 (30, 50)
             )
         elif r==2:
-            self.image = pygame.transform.scale(pygame.image.load("Eggumbo.png").convert_alpha(),(30,50))
+            self.image = pygame.transform.scale(pygame.image.load("Eggumbo.png").convert_alpha(),
+            (30,50))
         self.rect = self.image.get_rect(topleft=(x, y))
 
         self.start_x = x
@@ -96,7 +98,8 @@ class Enemy(pygame.sprite.Sprite):
                 for platform in platforms:
                     if self.rect.colliderect(platform):
                         if step > 0: #a
-                            self.rect.bottom = platform.top + 45
+                            print (platform.top[1])
+                            self.rect.bottom = platform.top[1] - self.image.get_height() + 7
                             self.vel_y = 0
                             self.jump = False
                         break
@@ -131,6 +134,17 @@ def main():
         running = True
         score = 0
         font = pygame.font.SysFont(None, 40)
+
+        coin_list = [coin.Coin(800, 5200),
+                     coin.Coin(650, 5500),
+                     coin.Coin(500, 5200),
+                     coin.Coin(1350, 5300),
+                     coin.Coin(1750, 5300),
+                     coin.Coin(2150, 5300),
+                     coin.Coin(2500, 5300)
+                     ]
+        coins = pygame.sprite.Group(*coin_list)
+
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -187,6 +201,14 @@ def main():
 
             score_text = font.render(f"Score: {score}", True, (0, 0, 0))
             screen.blit(score_text, (20, 20))
+
+            for c in coins:
+                c.draw(screen, camera_x, camera_y)
+
+            for c in coins.copy():
+                if player.hitbox.colliderect(c.rect):
+                    score += 50
+                    coins.remove(c)
 
             pygame.display.update()
             print(player.idle_time)
