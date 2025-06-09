@@ -75,7 +75,29 @@ class Enemy(pygame.sprite.Sprite):
             if on_platform and not standing_on_ground and self.platform_timer > self.max_platform_time:
                 self.vel_y = 5
                 self.jump = True
+        else:
+            self.vel_y += 0.5
+            dy = self.vel_y
+            step = 1 if dy > 0 else -1
 
+            for _ in range(abs(int(dy))):
+                self.rect.y += step
+
+                for platform in platforms:
+                    if self.rect.colliderect(platform):
+                        if step > 0:
+                            self.rect.bottom = platform.top + 45
+                            self.vel_y = 0
+                            self.jump = False
+                        elif step < 0:
+                            self.rect.top = platform.bottom
+                            self.vel_y = 0
+                        break
+            for platform in platforms:
+                if self.rect.bottom == platform.top and self.rect.right > platform.left and self.rect.left < platform.right:
+                    on_platform = True
+                    if hasattr(platform, "is_ground") and platform.is_ground:
+                        standing_on_ground = True
 
 def game_over(screen, resolution):
     font = pygame.font.SysFont("segoeuiemoji", 80)
