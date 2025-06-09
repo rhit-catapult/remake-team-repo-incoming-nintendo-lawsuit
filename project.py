@@ -8,8 +8,10 @@ import random
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y, distance=100, speed=2):
         super().__init__()
-        self.image = pygame.Surface((40, 40))
-        self.image.fill((255, 0, 0))
+        self.image = pygame.transform.scale(
+            pygame.image.load("Gumba_Enemy.png").convert_alpha(),
+            (30, 50)
+        )
         self.rect = self.image.get_rect(topleft=(x, y))
 
         self.start_x = x
