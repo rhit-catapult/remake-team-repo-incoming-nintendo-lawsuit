@@ -35,8 +35,9 @@ class Enemy(pygame.sprite.Sprite):
         self.flattened = False
         self.platform_timer = 0
         self.max_platform_time = 180
+        self.remove_timer = 0
 
-    def update(self, platforms):
+    def update(self, platforms,enemies):
         # Horizontal movement & boundaries
         if not self.flattened:
             self.rect.x += self.vel_x
@@ -88,6 +89,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.vel_y = 5
                 self.Ejump = True
         else:
+            self.remove_timer += 1
             self.vel_y += 0.5
             dy = self.vel_y
             step = 1 if dy > 0 else -1
@@ -98,14 +100,17 @@ class Enemy(pygame.sprite.Sprite):
                 for platform in platforms:
                     if self.rect.colliderect(platform):
                         if step > 0: #a
-                            self.rect.bottom = platform.top + self.image.get_height() - 7
+                            self.rect.top = platform.top - 3
                             self.vel_y = 0
-                            self.jump = False
                         break
+            if self.remove_timer >= 500:
+                enemies.remove(self)
+
+
 
 def game_over(screen, resolution):
     font = pygame.font.SysFont("segoeuiemoji", 80)
-    text = font.render("🐒🐒🐒🐒🐒🐒", True, (255, 0, 0))
+    text = font.render("🐒", True, (255, 0, 0))
     text_rect = text.get_rect(center=(resolution[0] // 2, resolution[1] // 2))
 
     screen.fill((0, 0, 0))
@@ -173,16 +178,15 @@ def main():
             lavatiles = tilemap.lava_rects
             player.move(tilerects)
             player.draw(camera_x, camera_y)
-            if enemy_smash_jump > pygame.time.get_ticks() - 400:
+            if enemy_smash_jump > pygame.time.get_ticks() - 800:
                 player_invincible = True
             else:
                 player_invincible = False
             if enemy_smash_jump < pygame.time.get_ticks() - 1:
                 player.enemy_bounce = False
             for enemy in enemies:
-                enemy.update(tilerects)
+                enemy.update(tilerects,enemies)
                 screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
-
             if player.y > 6000:
                 game_over(screen, resolution)
                 running = False
@@ -190,7 +194,7 @@ def main():
             for enemy in enemies:
                 if player.hitbox.colliderect(enemy.rect):
                     if player.velocity_y > 0 and enemy.flattened == False:
-                        enemy.image = pygame.transform.scale(pygame.image.load("Gumba_Enemy.png").convert_alpha(),(30, 7))
+                        enemy.image = pygame.transform.scale(enemy.image.convert_alpha(),(60, 7))
                         enemy.flattened = True
                         enemy_smash_jump = pygame.time.get_ticks()
                         player.enemy_bounce = True
@@ -213,5 +217,6 @@ def main():
                     score += 50
                     coins.remove(c)
             pygame.display.update()
+            print(player_invincible)
             fps.tick(90)
 main()
