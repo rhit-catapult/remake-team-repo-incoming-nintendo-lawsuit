@@ -4,8 +4,8 @@ from pygame.examples.sprite_texture import running
 
 BG = pygame.transform.scale(BG, (200, 200))
 
-x = 1000
-y = 740
+x = 7400
+y = 1000
 
 while running:
     for event in pygame.event.get():
