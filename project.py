@@ -6,7 +6,7 @@ import camera
 import random
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x, y, distance=100, speed=2):
+    def __init__(self, x, y):
         super().__init__()
         self.image = pygame.transform.scale(
             pygame.image.load("Gumba_Enemy.png").convert_alpha(),
@@ -15,8 +15,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(x, y))
 
         self.start_x = x
-        self.distance = distance
-        self.speed = speed
+        self.vel_x = random.choice([-2, 2])
 
         self.vel_y = 0
         self.jump = False
@@ -28,12 +27,15 @@ class Enemy(pygame.sprite.Sprite):
     def update(self, platforms):
         # Horizontal movement & boundaries
         if not self.flattened:
-            self.rect.x += self.speed
-            if self.rect.x > self.start_x + self.distance:
-                self.speed = -abs(self.speed)
-            elif self.rect.x < self.start_x:
-                self.speed = abs(self.speed)
-
+            self.rect.x += self.vel_x
+            for platform in platforms:
+                if self.rect.colliderect(platform):
+                    if self.vel_x > 0:  # Moving right, hit wall
+                        self.rect.right = platform.left
+                    elif self.vel_x < 0:  # Moving left, hit wall
+                        self.rect.left = platform.right
+                    self.vel_x *= -1  # Reverse direction
+                    break  # Stop checking after first wall hit
             # Apply gravity velocity
             self.vel_y += 0.5
 
@@ -43,14 +45,12 @@ class Enemy(pygame.sprite.Sprite):
 
             for _ in range(abs(int(dy))):
                 self.rect.y += step
-
                 for platform in platforms:
                     if self.rect.colliderect(platform):
                         if step > 0:  # Moving down, landed on platform
                             self.rect.bottom = platform.top
                             self.vel_y = 0
                             self.jump = False
-                            on_platform = True
                         elif step < 0:  # Moving up, hit ceiling
                             self.rect.top = platform.bottom
                             self.vel_y = 0
@@ -89,15 +89,7 @@ class Enemy(pygame.sprite.Sprite):
                             self.rect.bottom = platform.top + 45
                             self.vel_y = 0
                             self.jump = False
-                        elif step < 0:
-                            self.rect.top = platform.bottom
-                            self.vel_y = 0
                         break
-            for platform in platforms:
-                if self.rect.bottom == platform.top and self.rect.right > platform.left and self.rect.left < platform.right:
-                    on_platform = True
-                    if hasattr(platform, "is_ground") and platform.is_ground:
-                        standing_on_ground = True
 
 def game_over(screen, resolution):
     font = pygame.font.SysFont("segoeuiemoji", 80)
@@ -124,7 +116,7 @@ def main():
         tilemap.rendermap()
         tilerects = tilemap.tile_rects
 
-        enemy_list = [Enemy(300, 4700), Enemy(600, 4700)]
+        enemy_list = [Enemy(1315, 5500),Enemy(1415, 5500), Enemy(1615, 5500),Enemy(1815, 5500), Enemy(1915,5500),Enemy(2215, 5500)]
         enemies = pygame.sprite.Group(*enemy_list)
         running = True
         while running:
