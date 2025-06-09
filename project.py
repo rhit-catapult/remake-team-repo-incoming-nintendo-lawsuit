@@ -8,18 +8,28 @@ import random
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.transform.scale(
-            pygame.image.load("Gumba_Enemy.png").convert_alpha(),
-            (30, 50)
-        )
+        r = random.randint(0,2)
+        if r == 0:
+
+            self.image = pygame.transform.scale(
+                pygame.image.load("Gumba_Enemy.png").convert_alpha(),
+                (30, 50)
+            )
+        elif r== 1:
+            self.image = pygame.transform.scale(
+                pygame.image.load("Glumbas_Enemy.png").convert_alpha(),
+                (30, 50)
+            )
+        elif r==2:
+            self.image = pygame.transform.scale(pygame.image.load("Eggumbo.png").convert_alpha(),(30,50))
         self.rect = self.image.get_rect(topleft=(x, y))
 
         self.start_x = x
         self.vel_x = random.choice([-2, 2])
 
         self.vel_y = 0
-        self.jump = False
-        self.jump_timer = random.randint(60, 180)
+        self.Ejump = False
+        self.Ejump_timer = 0
         self.flattened = False
         self.platform_timer = 0
         self.max_platform_time = 180
@@ -66,15 +76,15 @@ class Enemy(pygame.sprite.Sprite):
                         standing_on_ground = True
 
             # Jump timer and jump logic remain the same
-            self.jump_timer -= 1
-            if self.jump_timer <= 0 and not self.jump and on_platform:
-                self.vel_y = -10
-                self.jump = True
-                self.jump_timer = random.randint(60, 180)
+            self.Ejump_timer -= 1
+            if self.Ejump_timer <= 0 and not self.Ejump and on_platform:
+                self.vel_y = -1
+                self.Ejump = True
+                self.Ejump_timer = random.randint(1, 3)
 
             if on_platform and not standing_on_ground and self.platform_timer > self.max_platform_time:
                 self.vel_y = 5
-                self.jump = True
+                self.Ejump = True
         else:
             self.vel_y += 0.5
             dy = self.vel_y
@@ -107,7 +117,7 @@ def main():
     resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("work pls")
-
+    enemy_smash_jump = 0
     while True:  # Restart loop
         fps = pygame.time.Clock()
         player = character.Player(screen, 300, 5100)
@@ -145,10 +155,11 @@ def main():
             camera_x, camera_y = camera.scroll_camera(player.hitbox, resolution[0], resolution[1], 7000, 7000)
             screen.blit(tilemap.map_display, (-camera_x, -camera_y))
             tilerects = tilemap.tile_rects
-
+            lavatiles = tilemap.lava_rects
             player.move(tilerects)
             player.draw(camera_x, camera_y)
-
+            if enemy_smash_jump < pygame.time.get_ticks() - 1:
+                player.enemy_bounce = False
             for enemy in enemies:
                 enemy.update(tilerects)
                 screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
@@ -160,15 +171,17 @@ def main():
             for enemy in enemies:
                 if player.hitbox.colliderect(enemy.rect):
                     if player.velocity_y > 0 and enemy.flattened == False:
-                        enemy.image = pygame.transform.scale(pygame.image.load("Gumba_Enemy.png").convert_alpha(),(30, 5))
+                        enemy.image = pygame.transform.scale(pygame.image.load("Gumba_Enemy.png").convert_alpha(),(30, 7))
                         enemy.flattened = True
+                        enemy_smash_jump = pygame.time.get_ticks()
+                        player.enemy_bounce = True
+                        player.jump()
 
                     if player.velocity_y <= 0 and enemy.flattened == False:
                         game_over(screen, resolution)
                         running = False
                         break
             pygame.display.update()
-            print(player.x, player.y)
+            print(player.idle_time)
             fps.tick(90)
-
 main()
