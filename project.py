@@ -73,68 +73,78 @@ class Enemy(pygame.sprite.Sprite):
             self.vel_y = 5
             self.jump = True
 
+def game_over(screen, resolution):
+    font = pygame.font.SysFont(None, 80)
+    text = font.render("GAME OVER", True, (255, 0, 0))
+    text_rect = text.get_rect(center=(resolution[0] // 2, resolution[1] // 2))
+
+    screen.fill((0, 0, 0))
+    screen.blit(text, text_rect)
+    pygame.display.update()
+
+    pygame.time.delay(3000)
+    pygame.event.clear()  # Clear input events# Wait 3 seconds
+
 def main():
     pygame.init()
     resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("work pls")
-    fps = pygame.time.Clock()
-    player = character.Player(screen, 50, 4700)
-    player_speed = 5
 
+    while True:  # Restart loop
+        fps = pygame.time.Clock()
+        player = character.Player(screen, 50, 4700)
+        player_speed = 5
 
-    tilemap.rendermap()  # Make sure map is rendered now that display exists
-    tilerects = tilemap.tile_rects
-
-    #enemies = pygame.sprite.Group()
-    enemy_list = [Enemy(300, 4700), Enemy(600, 4700)]
-    enemies = pygame.sprite.Group(*enemy_list)
-
-    # Spawn multiple enemies on valid tiles
-    for x in [300, 600]:
-        for rect in sorted(tilerects, key=lambda r: r.y):
-            if rect.left <= x <= rect.right:
-                enemy_y = rect.top - 40  # 40 is enemy height
-                # print(f"Enemy spawned at: ({x}, {enemy_y})")
-                # enemies.add(Enemy(x, enemy_y))
-                break
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    player.velocity_x += player_speed
-                if event.key == pygame.K_LEFT:
-                    player.velocity_x += -player_speed
-                if event.key == pygame.K_UP:
-                    player.jump_time = pygame.time.get_ticks()
-                    player.jump()
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_RIGHT:
-                    player.velocity_x -= player_speed
-                if event.key == pygame.K_LEFT:
-                    player.velocity_x += player_speed
-                if event.key == pygame.K_UP and not player.on_ground:
-                     player.jump_timer = 16
-
-        screen.fill((146, 244, 255))
-
-        camera_x, camera_y = camera.scroll_camera(player.hitbox, resolution[0], resolution[1], 7000, 7000)
-        tilemap_screen = tilemap.map_display
-        screen.blit(tilemap_screen, (-camera_x, -camera_y))
+        tilemap.rendermap()
         tilerects = tilemap.tile_rects
 
+        enemy_list = [Enemy(300, 4700), Enemy(600, 4700)]
+        enemies = pygame.sprite.Group(*enemy_list)
 
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RIGHT:
+                        player.velocity_x += player_speed
+                    if event.key == pygame.K_LEFT:
+                        player.velocity_x += -player_speed
+                    if event.key == pygame.K_UP:
+                        player.jump_time = pygame.time.get_ticks()
+                        player.jump()
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_RIGHT:
+                        player.velocity_x -= player_speed
+                    if event.key == pygame.K_LEFT:
+                        player.velocity_x += player_speed
+                    if event.key == pygame.K_UP and not player.on_ground:
+                        player.jump_timer = 16
 
-        # Update enemies
-        for enemy in enemies:
-            enemy.update(tilerects)  # or your platform list
-        for enemy in enemies:
-            screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
-        player.move(tilerects)
-        player.draw(camera_x, camera_y)
-        player.enemy_collision(enemies)
-        pygame.display.update()
-        fps.tick(90)
+            screen.fill((146, 244, 255))
+
+            camera_x, camera_y = camera.scroll_camera(player.hitbox, resolution[0], resolution[1], 7000, 7000)
+            screen.blit(tilemap.map_display, (-camera_x, -camera_y))
+            tilerects = tilemap.tile_rects
+
+            player.move(tilerects)
+            player.draw(camera_x, camera_y)
+
+            for enemy in enemies:
+                enemy.update(tilerects)
+                screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
+
+            # Check collision
+            for enemy in enemies:
+                if player.hitbox.colliderect(enemy.rect):
+                    game_over(screen, resolution)
+                    running = False  # Break inner loop to restart
+                    break
+
+            pygame.display.update()
+            fps.tick(90)
+
 main()
