@@ -3,110 +3,13 @@ import sys
 import character
 import parkourmaptiling as tilemap
 import camera
-import random
 import coin
+from enemy import Enemy
 
-class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
-        r = random.randint(0,2)
-        if r == 0:
-
-            self.image = pygame.transform.scale(
-                pygame.image.load("Gumba_Enemy.png").convert_alpha(),
-                (60, 100)
-            )
-        elif r== 1:
-            self.image = pygame.transform.scale(
-                pygame.image.load("Glumbas_Enemy.png").convert_alpha(),
-                (30, 50)
-            )
-        elif r==2:
-            self.image = pygame.transform.scale(pygame.image.load("Eggumbo.png").convert_alpha(),
-            (30,50))
-        self.rect = self.image.get_rect(topleft=(x, y))
-
-        self.start_x = x
-        self.vel_x = random.choice([-2, 2])
-
-        self.vel_y = 0
-        self.Ejump = False
-        self.Ejump_timer = 0
-        self.flattened = False
-        self.platform_timer = 0
-        self.max_platform_time = 180
-
-    def update(self, platforms):
-        # Horizontal movement & boundaries
-        if not self.flattened:
-            self.rect.x += self.vel_x
-            for platform in platforms:
-                if self.rect.colliderect(platform):
-                    if self.vel_x > 0:  # Moving right, hit wall
-                        self.rect.right = platform.left
-                    elif self.vel_x < 0:  # Moving left, hit wall
-                        self.rect.left = platform.right
-                    self.vel_x *= -1  # Reverse direction
-                    break  # Stop checking after first wall hit
-            # Apply gravity velocity
-            self.vel_y += 0.5
-
-            # Vertical movement with collision stepwise resolution
-            dy = self.vel_y
-            step = 1 if dy > 0 else -1
-
-            for _ in range(abs(int(dy))):
-                self.rect.y += step
-                for platform in platforms:
-                    if self.rect.colliderect(platform):
-                        if step > 0:  # Moving down, landed on platform
-                            self.rect.bottom = platform.top
-                            self.vel_y = 0
-                            self.jump = False
-                        elif step < 0:  # Moving up, hit ceiling
-                            self.rect.top = platform.bottom
-                            self.vel_y = 0
-                        break  # No need to check other platforms this pixel move
-
-            # After moving pixel by pixel vertically, check if on platform:
-            on_platform = False
-            standing_on_ground = False
-            for platform in platforms:
-                if self.rect.bottom == platform.top and self.rect.right > platform.left and self.rect.left < platform.right:
-                    on_platform = True
-                    if hasattr(platform, "is_ground") and platform.is_ground:
-                        standing_on_ground = True
-
-            # Jump timer and jump logic remain the same
-            self.Ejump_timer -= 1
-            if self.Ejump_timer <= 0 and not self.Ejump and on_platform:
-                self.vel_y = -1
-                self.Ejump = True
-                self.Ejump_timer = random.randint(1, 3)
-
-            if on_platform and not standing_on_ground and self.platform_timer > self.max_platform_time:
-                self.vel_y = 5
-                self.Ejump = True
-        else:
-            self.vel_y += 0.5
-            dy = self.vel_y
-            step = 1 if dy > 0 else -1
-
-            for _ in range(abs(int(dy))):
-                self.rect.y += step
-
-                for platform in platforms:
-                    if self.rect.colliderect(platform):
-                        if step > 0: #a
-                            print (platform.top[1])
-                            self.rect.bottom = platform.top[1] - self.image.get_height() + 7
-                            self.vel_y = 0
-                            self.jump = False
-                        break
 
 def game_over(screen, resolution):
     font = pygame.font.SysFont("segoeuiemoji", 80)
-    text = font.render("🐒🐒🐒🐒🐒🐒", True, (255, 0, 0))
+    text = font.render("🐒", True, (255, 0, 0))
     text_rect = text.get_rect(center=(resolution[0] // 2, resolution[1] // 2))
 
     screen.fill((0, 0, 0))
@@ -120,7 +23,7 @@ def main():
     resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("work pls")
-    enemy_smash_jump = 0
+    enemy_smash_jump = -500000
     while True:  # Restart loop
         fps = pygame.time.Clock()
         player = character.Player(screen, 300, 5100)
@@ -174,12 +77,15 @@ def main():
             lavatiles = tilemap.lava_rects
             player.move(tilerects)
             player.draw(camera_x, camera_y)
+            if enemy_smash_jump > pygame.time.get_ticks() - 800:
+                player_invincible = True
+            else:
+                player_invincible = False
             if enemy_smash_jump < pygame.time.get_ticks() - 1:
                 player.enemy_bounce = False
             for enemy in enemies:
-                enemy.update(tilerects)
+                enemy.update(tilerects,enemies)
                 screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
-
             if player.y > 6000:
                 game_over(screen, resolution)
                 running = False
@@ -187,14 +93,14 @@ def main():
             for enemy in enemies:
                 if player.hitbox.colliderect(enemy.rect):
                     if player.velocity_y > 0 and enemy.flattened == False:
-                        enemy.image = pygame.transform.scale(pygame.image.load("Gumba_Enemy.png").convert_alpha(),(30, 7))
+                        enemy.image = pygame.transform.scale(enemy.image.convert_alpha(),(60, 7))
                         enemy.flattened = True
                         enemy_smash_jump = pygame.time.get_ticks()
                         player.enemy_bounce = True
                         player.jump()
                         score += 100
 
-                    if player.velocity_y <= 0 and enemy.flattened == False:
+                    if player.velocity_y <= 0 and enemy.flattened == False and player_invincible == False:
                         game_over(screen, resolution)
                         running = False
                         break
@@ -209,8 +115,7 @@ def main():
                 if player.hitbox.colliderect(c.rect):
                     score += 50
                     coins.remove(c)
-
             pygame.display.update()
-            print(player.idle_time)
+            print(player_invincible)
             fps.tick(90)
 main()

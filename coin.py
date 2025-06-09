@@ -4,7 +4,7 @@ class Coin(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.image = pygame.transform.scale(
-            pygame.image.load("Lava_1.png").convert_alpha(), (30, 30)
+            pygame.image.load("Coin.png").convert_alpha(), (25, 25)
         )
         self.rect = self.image.get_rect(topleft=(x, y))
 
