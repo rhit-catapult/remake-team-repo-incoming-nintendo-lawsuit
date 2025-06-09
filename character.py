@@ -12,7 +12,7 @@ class Player:
         self.walk_left_images = [pygame.transform.flip(img, True, False) for img in self.walk_right_images]
         self.frame_index = 0
         self.animation_timer = 0
-        self.animation_speed = 1
+        self.animation_speed = .15
         self.rect = self.walk_right_images[0].get_rect()
         self.screen = screen
         self.x = x
