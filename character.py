@@ -9,11 +9,20 @@ class Player:
             self.scale_sprite_image("Nur_Walking_1.png"),
             self.scale_sprite_image("Nur_Walking_3.png")
         ]
-        self.idle_image = self.scale_sprite_image("Nur_Jump.png")
+        self.idle_images = [
+            self.scale_sprite_image("Idol_1.png"),
+            self.scale_sprite_image("Idol_2.png"),
+            self.scale_sprite_image("Idol_3.png"),
+            self.scale_sprite_image("Idol_3.png"),
+            self.scale_sprite_image("Idol_2.png")
+        ]
         self.last_movement = 0
         self.idle_time = 0
         self.walk_left_images = [pygame.transform.flip(img, True, False) for img in self.walk_right_images]
         self.frame_index = 0
+        self.idle_frame_index = 0
+        self.idle_animation_timer = 0
+        self.idle_animation_speed = .15
         self.animation_timer = 0
         self.animation_speed = .15
         self.rect = self.walk_right_images[0].get_rect()
@@ -68,8 +77,14 @@ class Player:
             self.facing_left = False
         else:
             image = self.walk_left_images[0] if self.facing_left else self.walk_right_images[0]
-        if 930 > self.idle_time > 900:
-            image = self.idle_image
+        if 925 > self.idle_time > 900:
+            self.idle_animation_timer += self.idle_animation_speed
+            if self.idle_animation_timer >= 1:
+                self.idle_animation_timer = 0
+                self.idle_frame_index = (self.idle_frame_index + 1) % len(self.idle_images)
+            image = self.idle_images[self.idle_frame_index]
+        else:
+            self.idle_frame_index = 0
         self.screen.blit(image, (draw_x, draw_y))
 
     # def move(self,tiles):
@@ -116,7 +131,7 @@ class Player:
         #     self.y = 4700
         if self.velocity_x == 0 and self.on_ground:
             self.last_movement += 1
-            if self.last_movement >= 600:
+            if self.last_movement >= 300:
                 self.idle_time += 1
         else:
             self.last_movement = 0

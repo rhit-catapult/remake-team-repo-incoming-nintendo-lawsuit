@@ -13,7 +13,7 @@ class Enemy(pygame.sprite.Sprite):
 
             self.image = pygame.transform.scale(
                 pygame.image.load("Gumba_Enemy.png").convert_alpha(),
-                (30, 50)
+                (60, 100)
             )
         elif r== 1:
             self.image = pygame.transform.scale(
@@ -21,7 +21,8 @@ class Enemy(pygame.sprite.Sprite):
                 (30, 50)
             )
         elif r==2:
-            self.image = pygame.transform.scale(pygame.image.load("Eggumbo.png").convert_alpha(),(30,50))
+            self.image = pygame.transform.scale(pygame.image.load("Eggumbo.png").convert_alpha(),
+            (30,50))
         self.rect = self.image.get_rect(topleft=(x, y))
 
         self.start_x = x
@@ -96,7 +97,8 @@ class Enemy(pygame.sprite.Sprite):
                 for platform in platforms:
                     if self.rect.colliderect(platform):
                         if step > 0: #a
-                            self.rect.bottom = platform.top + 45
+                            print (platform.top[1])
+                            self.rect.bottom = platform.top[1] - self.image.get_height() + 7
                             self.vel_y = 0
                             self.jump = False
                         break
