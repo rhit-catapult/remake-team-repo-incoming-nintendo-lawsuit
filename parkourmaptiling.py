@@ -3,23 +3,25 @@ tile_rects = []
 tilesize = 50
 grass_image_raw = pygame.image.load("grass_tile.png")
 dirt_image_raw = pygame.image.load("dirt_tile.png")
+air_image_raw = pygame.image.load("air_tile.png")
 dirt_image = pygame.transform.scale(dirt_image_raw, (tilesize, tilesize))
 grass_image = pygame.transform.scale(grass_image_raw, (tilesize, tilesize))
+barrier_image = pygame.transform.scale(air_image_raw, (tilesize, tilesize))
 map_display = pygame.Surface((7500,7500))
 map_yoffset = 5000
 game_map = [
-[0]*15 + [2]*5 + [0]*130,
-[0]*150,
-[0]*150,
-[0]*10 + [2]*5 + [0]*135,
-[0]*150,
-[2]*150,
-[1]*150,
-[1]*150,
-[1]*150,
-[1]*150,
-[1]*150,
-[1]*150
+[3] + [0]*15 + [2]*5 + [0]*119+ [3],
+[3] + [0]*139+ [3],
+[3] + [0]*139+ [3],
+[3] + [0]*10 + [2]*5 + [0]*124+ [3],
+[3] + [0]*139 + [3],
+[3] + [2]*140,
+[3] + [1]*140,
+[3] + [1]*140,
+[3] + [1]*140,
+[3] + [1]*140,
+[3] + [1]*140,
+[3] + [1]*140
 ]
 def rendermap():
     global tile_rects
@@ -37,8 +39,7 @@ def rendermap():
             elif tile == 2:
                 map_display.blit(grass_image, (x*tilesize, y*tilesize+map_yoffset))
             elif tile == 3:
-                pass
-                # map_display.blit(TILEIMAGE (16x16), (x*tilesize, y*tilesize+map_yoffset)) # placeholder tile
+                map_display.blit(barrier_image, (x*tilesize, y*tilesize+map_yoffset)) # INVISIBLE WALL
             x += 1
         y += 1
     # for tile in tile_rects:  # tile hitboxes
