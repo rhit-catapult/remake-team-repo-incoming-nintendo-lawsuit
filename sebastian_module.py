@@ -1,7 +1,10 @@
-import pygame
-import sys
+import os
+import math
 import random
-
+import pygame
+from os import listdir
+from os.path import isfile, join
+pygame.init()
 
 #initialize
 pygame.init()
