@@ -124,15 +124,16 @@ def main():
         tilemap_screen = tilemap.map_display
         screen.blit(tilemap_screen, (-camera_x, -camera_y))
         tilerects = tilemap.tile_rects
-        player.move(tilerects)
-        player.draw(camera_x, camera_y)
+
+
 
         # Update enemies
         for enemy in enemies:
             enemy.update(tilerects)  # or your platform list
         for enemy in enemies:
             screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
-
+        player.move(tilerects)
+        player.draw(camera_x, camera_y)
         pygame.display.update()
         fps.tick(90)
 main()
