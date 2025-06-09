@@ -46,6 +46,8 @@ def rendermap():
                 map_display.blit(grass_image, (x*tilesize, y*tilesize+map_yoffset))
             elif tile == 3:
                 map_display.blit(barrier_image, (x*tilesize, y*tilesize+map_yoffset)) # INVISIBLE WALL
+            elif tile == 4:
+                pass
             x += 1
         y += 1
     # for tile in tile_rects:  # tile hitboxes
