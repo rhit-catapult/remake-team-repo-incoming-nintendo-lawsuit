@@ -14,7 +14,7 @@ class Enemy(pygame.sprite.Sprite):
 
             self.image = pygame.transform.scale(
                 pygame.image.load("Gumba_Enemy.png").convert_alpha(),
-                (60, 100)
+                (45, 60)
             )
         elif r== 1:
             self.image = pygame.transform.scale(
@@ -98,8 +98,7 @@ class Enemy(pygame.sprite.Sprite):
                 for platform in platforms:
                     if self.rect.colliderect(platform):
                         if step > 0: #a
-                            print (platform.top[1])
-                            self.rect.bottom = platform.top[1] - self.image.get_height() + 7
+                            self.rect.bottom = platform.top + self.image.get_height() - 7
                             self.vel_y = 0
                             self.jump = False
                         break
@@ -117,10 +116,11 @@ def game_over(screen, resolution):
 
 def main():
     pygame.init()
+    player_invincible = False
     resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("work pls")
-    enemy_smash_jump = 0
+    enemy_smash_jump = -500000
     while True:  # Restart loop
         fps = pygame.time.Clock()
         player = character.Player(screen, 300, 5100)
@@ -174,6 +174,10 @@ def main():
             lavatiles = tilemap.lava_rects
             player.move(tilerects)
             player.draw(camera_x, camera_y)
+            if enemy_smash_jump > pygame.time.get_ticks() - 400:
+                player_invincible = True
+            else:
+                player_invincible = False
             if enemy_smash_jump < pygame.time.get_ticks() - 1:
                 player.enemy_bounce = False
             for enemy in enemies:
@@ -194,7 +198,7 @@ def main():
                         player.jump()
                         score += 100
 
-                    if player.velocity_y <= 0 and enemy.flattened == False:
+                    if player.velocity_y <= 0 and enemy.flattened == False and player_invincible == False:
                         game_over(screen, resolution)
                         running = False
                         break
@@ -209,8 +213,7 @@ def main():
                 if player.hitbox.colliderect(c.rect):
                     score += 50
                     coins.remove(c)
-
+            print(player_invincible)
             pygame.display.update()
-            print(player.idle_time)
             fps.tick(90)
 main()
