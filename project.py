@@ -140,6 +140,7 @@ def main():
                     if player.velocity_y <= 0 and enemy.flattened == False and player_invincible == False and death_cooldown <= 0:
                         if score<500:
                             game_over(screen, resolution)
+                            last_death = pygame.time.get_ticks()
                             running = False
                             break
                         else:
@@ -149,8 +150,10 @@ def main():
                             player.is_invincible = True
 
             time = pygame.time.get_ticks() - last_death
+            print(time)
             time_raw = time / 1000
             time = round(time_raw,1)
+            print(time)
             score_text = font.render(f"Score: {score}", True, (0, 0, 0))
             time_text = font.render(f"{time}", True, (0, 0, 0))
             screen.blit(score_text, (20, 20))
@@ -165,7 +168,6 @@ def main():
             pygame.display.update()
             fps.tick(90)
             death_cooldown -= 1
-            print(player.has_won)
             if death_cooldown <= 0:
                 player.is_invincible = False
 main()
