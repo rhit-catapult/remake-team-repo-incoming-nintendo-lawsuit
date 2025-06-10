@@ -6,11 +6,13 @@ tilesize = 50
 grass_image_raw = pygame.image.load("Dirt_Grass_Block2.png")
 dirt_image_raw = pygame.image.load("Dirt_Block2.png")
 air_image_raw = pygame.image.load("air_tile.png")
-lava_image_raw = pygame.image.load("lava_2.png")
+lava1_image_raw = pygame.image.load("lava_2.png")
+lava2_image_raw =pygame.image.load("lava_1.png")
 dirt_image = pygame.transform.scale(dirt_image_raw, (tilesize, tilesize))
 grass_image = pygame.transform.scale(grass_image_raw, (tilesize, tilesize))
 barrier_image = pygame.transform.scale(air_image_raw, (tilesize, tilesize))
-lava_image = pygame.transform.scale(lava_image_raw, (tilesize, tilesize))
+lava1_image = pygame.transform.scale(lava1_image_raw, (tilesize, tilesize))
+lava2_image = pygame.transform.scale(lava2_image_raw, (tilesize, tilesize))
 map_display = pygame.Surface((7500,7500))
 map_yoffset = 5000
 game_map = [
@@ -48,6 +50,8 @@ def rendermap():
             if tile == 4:
                 rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
                 lava_rects.append(rect)
+            elif tile == 5:
+                pass
             elif tile != 0:
                 rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
                 tile_rects.append(rect)
@@ -58,6 +62,8 @@ def rendermap():
             elif tile == 3:
                 map_display.blit(barrier_image, (x * tilesize, y * tilesize + map_yoffset))
             elif tile == 4:
-                map_display.blit(lava_image, (x * tilesize, y * tilesize + map_yoffset))
+                map_display.blit(lava2_image, (x * tilesize, y * tilesize + map_yoffset))
+            elif tile == 5:
+                map_display.blit(lava1_image, (x * tilesize, y * tilesize + map_yoffset))
             x += 1
         y += 1
