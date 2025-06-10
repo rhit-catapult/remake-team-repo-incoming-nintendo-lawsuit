@@ -3,6 +3,7 @@ import sys
 import random
 import time
 
+
 class Clouds:
     def __init__(self, screen, x, image_filename):
         self.screen = screen
@@ -19,13 +20,19 @@ def main():
     pygame.display.set_caption("samantha_module")
     cloud = Clouds(screen, 0, "Clouds.png")
     clock = pygame.time.Clock()
+
+    background_image = pygame.image.load("Sky.png")
+    background_image = pygame.transform.scale(background_image, (screen.get_width(), screen.get_height()))
+
+
+
     while True:
         clock.tick(90)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-        screen.fill(pygame.Color ("light blue"))
-
+        #screen.fill(pygame.Color ("light blue"))
+        screen.blit(background_image, (0,0))
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[pygame.K_LEFT]:
             cloud.x -= 10
