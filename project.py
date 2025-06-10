@@ -38,13 +38,10 @@ def main():
         score = 0
         font = pygame.font.SysFont(None, 40)
 
-        coin_list = [coin.Coin(800, 5200),
+        coin_list = [
+                     coin.Coin(650, 5350),
                      coin.Coin(650, 5510),
-                     coin.Coin(500, 5200),
-                     coin.Coin(1350, 5500),
-                     coin.Coin(1750, 5500),
-                     coin.Coin(2150, 5500),
-                     coin.Coin(2500, 5500)
+                     coin.Coin(0, 0)
                      ]
         coins = pygame.sprite.Group(*coin_list)
 
@@ -70,7 +67,6 @@ def main():
                         player.jump_timer = 16
 
             screen.fill((146, 244, 255))
-
             camera_x, camera_y = camera.scroll_camera(player.hitbox, resolution[0], resolution[1], 7000, 7000)
             screen.blit(tilemap.map_display, (-camera_x, -camera_y))
             tilerects = tilemap.tile_rects
