@@ -39,17 +39,20 @@ def main():
         font = pygame.font.SysFont(None, 40)
 
         coin_list = [
-                     coin.Coin(650, 5350),
-                     coin.Coin(650, 5510),
-                     coin.Coin(1590, 5450),
-                     coin.Coin(1840, 5300),
-                     coin.Coin(1590, 5150),
-                     coin.Coin(1840, 5000),
-                     coin.Coin(2010, 5000),
-                     coin.Coin(2410, 5000),
+                     coin.Coin(650, 5950),
+                     coin.Coin(650, 6100),
+                     coin.Coin(1590, 6050),
+                     coin.Coin(1840, 5600),
+                     coin.Coin(1590, 5700),
+                     coin.Coin(1840, 5900),
+                     coin.Coin(2010, 5600),
+                     coin.Coin(2410, 5600),
                      coin.Coin(2610, 5750),
-                     coin.Coin(2710, 5200),
-                     coin.Coin(2710, 4950)
+                     coin.Coin(2710, 5800),
+                     coin.Coin(2710, 5550),
+                     coin.Coin(3060, 5450),
+                     coin.Coin(3360, 5350),
+                     coin.Coin(3660, 5250)
                      ]
         coins = pygame.sprite.Group(*coin_list)
 
@@ -93,7 +96,7 @@ def main():
             for enemy in enemies:
                 enemy.update(tilerects,enemies)
                 screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
-            if player.y > 6000 or player.touching_lava:
+            if player.y > 9000 or player.touching_lava:
                 game_over(screen, resolution)
                 running = False
                 break
