@@ -25,6 +25,7 @@ def main():
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("work pls")
     enemy_smash_jump = -500000
+    death_cooldown = 0
     time = 0
     while True:  # Restart loop
         fps = pygame.time.Clock()
@@ -132,11 +133,16 @@ def main():
                         player.jump()
                         score += 100*smash_counter
 
-                    if player.velocity_y <= 0 and enemy.flattened == False and player_invincible == False:
-                        game_over(screen, resolution)
-                        running = False
-                        last_death = pygame.time.get_ticks()
-                        break
+                    if player.velocity_y <= 0 and enemy.flattened == False and player_invincible == False and death_cooldown <= 0:
+                        if score<500:
+                            game_over(screen, resolution)
+                            running = False
+                            break
+                        else:
+                            score-=500
+                            death_cooldown = 180
+                            player_invincible = True
+
             time = pygame.time.get_ticks() - last_death
             time = round(time,2) / 1000
             score_text = font.render(f"Score: {score}", True, (0, 0, 0))
@@ -152,5 +158,6 @@ def main():
                     coins.remove(c)
             pygame.display.update()
             fps.tick(90)
+            death_cooldown -= 1
             print(player.x,player.y)
 main()
