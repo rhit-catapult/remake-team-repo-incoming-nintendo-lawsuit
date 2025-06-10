@@ -24,6 +24,8 @@ def main():
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("work pls")
     enemy_smash_jump = -500000
+    block_size = 120
+
     while True:  # Restart loop
         fps = pygame.time.Clock()
         player = character.Player(screen, 300, 4500)
@@ -31,6 +33,7 @@ def main():
 
         tilemap.rendermap()
         tilerects = tilemap.tile_rects
+
 
         enemy_list = [Enemy(1315, 5500),Enemy(1415, 5500), Enemy(1615, 5500),Enemy(1815, 5500), Enemy(1915,5500),Enemy(2215, 5500), Enemy(605, 5350)]
         enemies = pygame.sprite.Group(*enemy_list)
@@ -72,6 +75,31 @@ def main():
             tilerects = tilemap.tile_rects
             lavarects = tilemap.lava_rects
             player.move(tilerects,lavarects)
+            # player.update_hitbox()  # Update hitbox position
+
+            # Pipe slide logic
+            keys = pygame.key.get_pressed()
+            # pipe_tiles = [tile for tile in tilerects if
+            #               tilemap.game_map[tile.top // tilemap.tilesize][tile.left // tilemap.tilesize] == 6]
+
+            for pipe_rect in tilemap.pipe_rects:
+                if player.hitbox.colliderect(pipe_rect):
+                    if keys[pygame.K_DOWN]:  # Press down arrow to enter the pipe
+                        player.y += 5
+
+                        # for i in range(30):  # Slide animation
+                        #
+                        #     # player.update_hitbox()
+                        #     # screen.fill((0, 0, 0))
+                        #     screen.blit(tilemap.map_display, (-camera_x, -camera_y))
+                        #     # player.draw(camera_x, camera_y)
+                        #     pygame.display.update()
+                        #     fps.tick(60)
+                        # # Warp destination
+                        # player.x = 300
+                        # player.y = 3000
+                        # # player.update_hitbox()
+
             player.draw(camera_x, camera_y)
             if enemy_smash_jump > pygame.time.get_ticks() - 800:
                 player_invincible = True
@@ -103,6 +131,7 @@ def main():
 
             score_text = font.render(f"Score: {score}", True, (0, 0, 0))
             screen.blit(score_text, (20, 20))
+
             for c in coins:
                 c.draw(screen, camera_x, camera_y)
 
@@ -111,6 +140,7 @@ def main():
                     score += 50
                     coins.remove(c)
             pygame.display.update()
+            print(player_invincible)
             fps.tick(90)
             print(player.x,player.y)
 main()
