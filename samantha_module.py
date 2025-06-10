@@ -10,7 +10,7 @@ class Clouds:
         self.x = x
         self.image =pygame.image.load(image_filename)
     def move(self):
-        self.x += -3
+        self.x += -0.3
         if self.x < -self.image.get_width():
             self.x = 0
     def draw(self, screen, camera_x, camera_y):
