@@ -61,7 +61,6 @@ def main():
         running = True
         score = 0
         font = pygame.font.SysFont(None, 40)
-
         coin_list = [
                      coin.Coin(650, 5950),
                      coin.Coin(650, 6100),
@@ -79,11 +78,11 @@ def main():
                      coin.Coin(3660, 5250)
                      ]
         coins = pygame.sprite.Group(*coin_list)
-        if running:
-            if left_pressed == True:
-                player.velocity_x = -5
-            elif right_pressed == True:
-                player.velocity_x = 5
+        if left_pressed == True:
+            player.velocity_x = -5
+        elif right_pressed == True:
+            player.velocity_x = 5
+        k = 0
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -114,7 +113,12 @@ def main():
                         left_pressed = False
                     if event.key == pygame.K_UP and not player.on_ground:
                         player.jump_timer = 16
-
+            if k < 5:
+                pygame.event.post(pygame.event.Event(pygame.KEYDOWN, {"key": pygame.K_RIGHT}))
+                pygame.event.post(pygame.event.Event(pygame.KEYUP, {"key": pygame.K_RIGHT}))
+                pygame.event.post(pygame.event.Event(pygame.KEYDOWN, {"key": pygame.K_LEFT}))
+                pygame.event.post(pygame.event.Event(pygame.KEYUP, {"key": pygame.K_LEFT}))
+                k += 1
             screen.fill((146, 244, 255))
             camera_x, camera_y = camera.scroll_camera(player.hitbox, resolution[0], resolution[1], 7000, 7000)
             screen.blit(tilemap.map_display, (-camera_x, -camera_y))
@@ -168,6 +172,7 @@ def main():
             time_text = font.render(f"{time}", True, (0, 0, 0))
             screen.blit(score_text, (20, 20))
             screen.blit(time_text, (20, 70))
+            print(k)
             for c in coins:
                 c.draw(screen, camera_x, camera_y)
             for c in coins.copy():
