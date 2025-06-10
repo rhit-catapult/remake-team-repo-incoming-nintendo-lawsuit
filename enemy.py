@@ -47,6 +47,20 @@ class Enemy(pygame.sprite.Sprite):
             # Apply gravity velocity
             self.vel_y += 0.5
 
+            # Ledge detection
+            ahead_x = self.rect.midbottom[0] + (self.vel_x * 5)
+            ahead_y = self.rect.midbottom[1] + 1  # Just below the bottom of the enemy
+            ahead_rect = pygame.Rect(ahead_x, ahead_y, 5, 5)
+
+            ground_ahead = False
+            for platform in platforms:
+                if ahead_rect.colliderect(platform):
+                    ground_ahead = True
+                    break
+
+            if not ground_ahead:
+                self.vel_x *= -1  # Turn around if there's no ground ahead
+
             # Vertical movement with collision stepwise resolution
             dy = self.vel_y
             step = 1 if dy > 0 else -1
