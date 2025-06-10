@@ -2,23 +2,26 @@ import pygame
 import random
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, type):
         super().__init__()
-        r = random.randint(0,2)
-        if r == 0:
+        self.type = ""
+        if type == 0:
 
             self.image = pygame.transform.scale(
                 pygame.image.load("Gumba_Enemy.png").convert_alpha(),
                 (40, 50)
             )
-        elif r== 1:
+            self.type = "Gumba"
+        elif type== 1:
             self.image = pygame.transform.scale(
                 pygame.image.load("Glumbas_Enemy.png").convert_alpha(),
                 (50, 50)
             )
-        elif r==2:
+            self.type = "Glumbas"
+        elif type==2:
             self.image = pygame.transform.scale(pygame.image.load("Eggumbo.png").convert_alpha(),
             (65,65))
+            self.type = "Eggumbo"
         self.rect = self.image.get_rect(topleft=(x, y))
 
         self.start_x = x
@@ -58,7 +61,7 @@ class Enemy(pygame.sprite.Sprite):
                     ground_ahead = True
                     break
 
-            if not ground_ahead:
+            if not ground_ahead and not self.type == "Gumba":
                 self.vel_x *= -1  # Turn around if there's no ground ahead
 
             # Vertical movement with collision stepwise resolution

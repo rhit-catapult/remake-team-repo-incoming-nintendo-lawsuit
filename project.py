@@ -32,7 +32,25 @@ def main():
         tilemap.rendermap()
         tilerects = tilemap.tile_rects
         smash_counter = 0
-        enemy_list = [Enemy(1315, 5500),Enemy(1415, 5500), Enemy(1615, 5500),Enemy(1815, 5500), Enemy(1915,5500),Enemy(2215, 5500), Enemy(605, 5350)]
+        enemy_list = [
+            Enemy(650, 5350,2),
+            Enemy(1615, 5500,2),
+            Enemy(1615, 5900, 1),
+            Enemy(1850, 5800, 1),
+            Enemy(1850, 5350,2),
+            Enemy(1400, 6000, 0),
+            Enemy(1500, 6000, 0),
+            Enemy(1600, 6000, 0),
+            Enemy(1700, 6000, 0),
+            Enemy(1800, 6000, 0),
+            Enemy(1900, 6000, 0),
+            Enemy(2000, 6000, 0),
+            Enemy(2100, 6000, 0),
+            Enemy(2200, 6000, 0),
+            Enemy(2300, 6000, 0)
+
+
+        ]
         enemies = pygame.sprite.Group(*enemy_list)
         running = True
         score = 0
