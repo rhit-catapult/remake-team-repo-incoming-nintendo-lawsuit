@@ -5,7 +5,7 @@ import parkourmaptiling as tilemap
 import camera
 import coin
 from enemy import Enemy
-
+import samantha_module
 
 def game_over(screen, resolution):
     font = pygame.font.SysFont("segoeuiemoji", 80)
@@ -51,6 +51,7 @@ def main():
     enemy_smash_jump = -500000
     death_cooldown = 0
     background_image = pygame.image.load("Sky.jpg")
+    clouds = samantha_module.Clouds(screen, 0, "Clouds.png")
     #background_image = pygame.transform.scale(background_image, (screen.get_width(), screen.get_height()))
     while True:  # Restart loop
         fps = pygame.time.Clock()
@@ -146,6 +147,8 @@ def main():
            # screen.fill((146, 244, 255))
             screen.blit(background_image, (0, 0))
             camera_x, camera_y = camera.scroll_camera(player.hitbox, resolution[0], resolution[1], 7000, 7000)
+            clouds.draw(screen,0, 0)
+            clouds.move()
             screen.blit(tilemap.map_display, (-camera_x, -camera_y))
             tilerects = tilemap.tile_rects
             lavarects = tilemap.lava_rects

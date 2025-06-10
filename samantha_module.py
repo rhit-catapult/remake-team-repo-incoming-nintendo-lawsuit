@@ -9,11 +9,13 @@ class Clouds:
         self.screen = screen
         self.x = x
         self.image =pygame.image.load(image_filename)
-
+    def move(self):
+        self.x += -3
+        if self.x < -self.image.get_width():
+            self.x = 0
     def draw(self, screen, camera_x, camera_y):
-        for k in range(10):
+        for k in range(3):
             screen.blit(self.image, (self.x - camera_x + self.image.get_width() * k, camera_y))
-
 def main():
     pygame.init()
     screen = pygame.display.set_mode((1000, 600))
