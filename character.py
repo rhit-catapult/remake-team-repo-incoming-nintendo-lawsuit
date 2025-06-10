@@ -219,7 +219,7 @@ class Player:
                 self.hit_list.append(tile)
         return self.hit_list
     def jump(self):
-        if self.on_ground or self.coyote_enable or self.enemy_bounce:
+        # if self.on_ground or self.coyote_enable or self.enemy_bounce:
             self.velocity_y = 0
             self.velocity_y += self.jump_power
             self.on_ground = False

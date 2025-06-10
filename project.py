@@ -39,7 +39,6 @@ def start_screen(screen):
             elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 waiting = False
 
-
 def main():
     last_death = 0
     left_pressed = False
@@ -51,6 +50,8 @@ def main():
     start_screen(screen)
     enemy_smash_jump = -500000
     death_cooldown = 0
+    background_image = pygame.image.load("BG_1.jpg")
+    background_image = pygame.transform.scale(background_image, (screen.get_width(), screen.get_height()))
     while True:  # Restart loop
         fps = pygame.time.Clock()
         player = character.Player(screen, 50, 5500)
@@ -142,7 +143,8 @@ def main():
                 pygame.event.post(pygame.event.Event(pygame.KEYDOWN, {"key": pygame.K_LEFT}))
                 pygame.event.post(pygame.event.Event(pygame.KEYUP, {"key": pygame.K_LEFT}))
                 k += 1
-            screen.fill((146, 244, 255))
+           # screen.fill((146, 244, 255))
+            screen.blit(background_image, (0, 0))
             camera_x, camera_y = camera.scroll_camera(player.hitbox, resolution[0], resolution[1], 7000, 7000)
             screen.blit(tilemap.map_display, (-camera_x, -camera_y))
             tilerects = tilemap.tile_rects
@@ -204,7 +206,8 @@ def main():
             screen.blit(heart_text, (20,50))
             screen.blit(time_text, (20, 80))
             pygame.display.update()
-            print(player.x,player.y)
+           # print(player.x,player.y)
+            print(fps.get_fps())
             death_cooldown -= 1
             if death_cooldown <= 0:
                 player.is_invincible = False
