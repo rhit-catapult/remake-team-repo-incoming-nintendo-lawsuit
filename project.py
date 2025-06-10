@@ -10,6 +10,7 @@ from parkourmaptiling import pipebottom_rects
 
 def game_over(screen, resolution):
     font = pygame.font.SysFont("segoeuiemoji", 80)
+
     text = font.render("🐒", True, (255, 0, 0))
     text_rect = text.get_rect(center=(resolution[0] // 2, resolution[1] // 2))
 
@@ -18,6 +19,8 @@ def game_over(screen, resolution):
     pygame.display.update()
     pygame.time.delay(500)
     pygame.event.clear()  # Clear input events# Wait 3 seconds
+
+
 
 def main():
     last_death = 0
@@ -155,9 +158,12 @@ def main():
             time = round(time_raw,1)
             print(time)
             score_text = font.render(f"Score: {score}", True, (0, 0, 0))
+            heart_text = font.render(f"Lives:{"<3"*(score//500 + 1)}", True, (0, 0, 0))
             time_text = font.render(f"{time}", True, (0, 0, 0))
             screen.blit(score_text, (20, 20))
-            screen.blit(time_text, (20, 70))
+            screen.blit(heart_text, (20,50))
+            screen.blit(time_text, (20, 80))
+
             for c in coins:
                 c.draw(screen, camera_x, camera_y)
 
