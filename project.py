@@ -26,12 +26,12 @@ def main():
     enemy_smash_jump = -500000
     while True:  # Restart loop
         fps = pygame.time.Clock()
-        player = character.Player(screen, 300, 4500)
+        player = character.Player(screen, 2600, 5000)
         player_speed = 5
 
         tilemap.rendermap()
         tilerects = tilemap.tile_rects
-
+        smash_counter = 0
         enemy_list = [Enemy(1315, 5500),Enemy(1415, 5500), Enemy(1615, 5500),Enemy(1815, 5500), Enemy(1915,5500),Enemy(2215, 5500), Enemy(605, 5350)]
         enemies = pygame.sprite.Group(*enemy_list)
         running = True
@@ -41,7 +41,15 @@ def main():
         coin_list = [
                      coin.Coin(650, 5350),
                      coin.Coin(650, 5510),
-                     coin.Coin(0, 0)
+                     coin.Coin(1590, 5450),
+                     coin.Coin(1840, 5300),
+                     coin.Coin(1590, 5150),
+                     coin.Coin(1840, 5000),
+                     coin.Coin(2010, 5000),
+                     coin.Coin(2410, 5000),
+                     coin.Coin(2610, 5750),
+                     coin.Coin(2710, 5200),
+                     coin.Coin(2710, 4950)
                      ]
         coins = pygame.sprite.Group(*coin_list)
 
@@ -73,6 +81,9 @@ def main():
             lavarects = tilemap.lava_rects
             player.move(tilerects,lavarects)
             player.draw(camera_x, camera_y)
+            if player.on_ground == True:
+                smash_counter = 0
+
             if enemy_smash_jump > pygame.time.get_ticks() - 800:
                 player_invincible = True
             else:
@@ -89,12 +100,13 @@ def main():
             for enemy in enemies:
                 if player.hitbox.colliderect(enemy.rect):
                     if player.velocity_y > 0 and enemy.flattened == False:
+                        smash_counter += 1
                         enemy.image = pygame.transform.scale(enemy.image.convert_alpha(),(60, 7))
                         enemy.flattened = True
                         enemy_smash_jump = pygame.time.get_ticks()
                         player.enemy_bounce = True
                         player.jump()
-                        score += 100
+                        score += 100*smash_counter
 
                     if player.velocity_y <= 0 and enemy.flattened == False and player_invincible == False:
                         game_over(screen, resolution)
