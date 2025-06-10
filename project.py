@@ -61,6 +61,7 @@ def main():
         running = True
         score = 0
         font = pygame.font.SysFont(None, 40)
+
         coin_list = [
                      coin.Coin(650, 5950),
                      coin.Coin(650, 6100),
@@ -169,8 +170,12 @@ def main():
             time_raw = time / 1000
             time = round(time_raw,1)
             score_text = font.render(f"Score: {score}", True, (0, 0, 0))
+            heart_text = font.render(f"Lives:{"<3"*(score//500 + 1)}", True, (0, 0, 0))
             time_text = font.render(f"{time}", True, (0, 0, 0))
             screen.blit(score_text, (20, 20))
+            screen.blit(heart_text, (20,50))
+            screen.blit(time_text, (20, 80))
+
             screen.blit(time_text, (20, 70))
             print(k)
             for c in coins:
