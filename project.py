@@ -26,7 +26,7 @@ def main():
     enemy_smash_jump = -500000
     while True:  # Restart loop
         fps = pygame.time.Clock()
-        player = character.Player(screen, 2600, 5000)
+        player = character.Player(screen, 50, 5500)
         player_speed = 5
 
         tilemap.rendermap()
