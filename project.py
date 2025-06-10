@@ -21,6 +21,8 @@ def game_over(screen, resolution):
 
 def main():
     last_death = 0
+    left_pressed = False
+    right_pressed = False
     pygame.init()
     resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
@@ -77,7 +79,11 @@ def main():
                      coin.Coin(3660, 5250)
                      ]
         coins = pygame.sprite.Group(*coin_list)
-
+        if running:
+            if left_pressed == True:
+                player.velocity_x = -5
+            elif right_pressed == True:
+                player.velocity_x = 5
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -85,9 +91,13 @@ def main():
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RIGHT:
-                        player.velocity_x += player_speed
+                        if not right_pressed == True:
+                         player.velocity_x += player_speed
+                        right_pressed = True
                     if event.key == pygame.K_LEFT:
-                        player.velocity_x += -player_speed
+                        if not left_pressed == True:
+                            player.velocity_x += -player_speed
+                        left_pressed = True
                     if event.key == pygame.K_UP:
                         player.jump_time = pygame.time.get_ticks()
                         player.jump()
@@ -95,9 +105,13 @@ def main():
                         print(player.x, player.y)
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_RIGHT:
-                        player.velocity_x -= player_speed
+                        if right_pressed == True:
+                            player.velocity_x -= player_speed
+                        right_pressed = False
                     if event.key == pygame.K_LEFT:
-                        player.velocity_x += player_speed
+                        if left_pressed == True:
+                         player.velocity_x += player_speed
+                        left_pressed = False
                     if event.key == pygame.K_UP and not player.on_ground:
                         player.jump_timer = 16
 
@@ -125,7 +139,6 @@ def main():
                 game_over(screen, resolution)
                 running = False
                 last_death = pygame.time.get_ticks()
-                break
             for enemy in enemies:
                 if player.hitbox.colliderect(enemy.rect):
                     if player.velocity_y > 0 and enemy.flattened == False:
@@ -142,7 +155,6 @@ def main():
                             game_over(screen, resolution)
                             last_death = pygame.time.get_ticks()
                             running = False
-                            break
                         else:
                             score-=500
                             death_cooldown = 180
@@ -150,23 +162,21 @@ def main():
                             player.is_invincible = True
 
             time = pygame.time.get_ticks() - last_death
-            print(time)
             time_raw = time / 1000
             time = round(time_raw,1)
-            print(time)
             score_text = font.render(f"Score: {score}", True, (0, 0, 0))
             time_text = font.render(f"{time}", True, (0, 0, 0))
             screen.blit(score_text, (20, 20))
             screen.blit(time_text, (20, 70))
             for c in coins:
                 c.draw(screen, camera_x, camera_y)
-
             for c in coins.copy():
                 if player.hitbox.colliderect(c.rect):
                     score += 50
                     coins.remove(c)
-            pygame.display.update()
+            print(player.velocity_x)
             fps.tick(90)
+            pygame.display.update()
             death_cooldown -= 1
             if death_cooldown <= 0:
                 player.is_invincible = False
