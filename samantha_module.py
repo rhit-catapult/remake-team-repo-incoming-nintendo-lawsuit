@@ -1,7 +1,7 @@
 import pygame
 import sys
-import time
 import random
+import time
 
 class Clouds:
     def __init__(self, screen, x, image_filename):
@@ -9,10 +9,9 @@ class Clouds:
         self.x = x
         self.image =pygame.image.load(image_filename)
 
-    def draw(self):
-        self.screen.blit(self.image, (self.x, 2725))
-
-
+    def draw(self, screen, camera_x, camera_y):
+        for k in range(10):
+            screen.blit(self.image, (self.x - camera_x + self.image.get_width() * k, camera_y))
 
 def main():
     pygame.init()
@@ -21,16 +20,22 @@ def main():
     cloud = Clouds(screen, 0, "Clouds.png")
     clock = pygame.time.Clock()
     while True:
-        clock.tick(60)
+        clock.tick(90)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+        screen.fill(pygame.Color ("light blue"))
 
-    pressed_keys = pygame.key.get_pressed()
-    if pressed_keys[pygame.K_LEFT]:
-        cloud.x -= 10
-    if pressed_keys[pygame.K_RIGHT]:
-        cloud.x += 10
+        pressed_keys = pygame.key.get_pressed()
+        if pressed_keys[pygame.K_LEFT]:
+            cloud.x -= 10
+        if pressed_keys[pygame.K_RIGHT]:
+            cloud.x += 10
+
+        cloud.draw(screen, 400, 200)
+        pygame.display.update()
+
 
 if __name__ == "__main__":
     main()
+    print("samantha_module")
