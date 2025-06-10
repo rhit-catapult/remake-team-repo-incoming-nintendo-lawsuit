@@ -28,6 +28,7 @@ class Player:
         self.rect = self.walk_right_images[0].get_rect()
         self.screen = screen
         self.is_invincible = False
+        self.has_won = False
         self.x = x
         self.y = y
         self.jump_power = -7
@@ -133,7 +134,7 @@ class Player:
     #     if self.jump_time + 200 > pygame.time.get_ticks() and self.on_ground: # 200ms since last jump input
     #         self.jump() # jumps when landing
 # CHATGPT VERSION (MUCH BETTER FUNCTIONALLY THAN MINE - 2 HOURS OF FAILURE)
-    def move(self, tiles,lavatiles):
+    def move(self, tiles,lavatiles,pipetiles):
         collision_types = {'top': False, 'bottom': False, 'left': False, 'right': False}
         # if self.y > 5700:
         #     self.x = 50
@@ -204,11 +205,13 @@ class Player:
             self.jump()
         self.hitbox.topleft = (self.x, self.y)
         self.collision(lavatiles)
-        print(len(self.hit_list))
         if len(self.hit_list) > 0:
             self.touching_lava = True
         else:
             self.touching_lava = False
+        self.collision(pipetiles)
+        if len(self.hit_list) > 0:
+            self.has_won = True
     def collision(self, tiles):
         self.hit_list = []
         for tile in tiles: # runs

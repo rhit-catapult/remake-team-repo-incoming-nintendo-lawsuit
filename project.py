@@ -5,6 +5,7 @@ import parkourmaptiling as tilemap
 import camera
 import coin
 from enemy import Enemy
+from parkourmaptiling import pipebottom_rects
 
 
 def game_over(screen, resolution):
@@ -90,6 +91,8 @@ def main():
                     if event.key == pygame.K_UP:
                         player.jump_time = pygame.time.get_ticks()
                         player.jump()
+                    if event.key == pygame.K_SPACE:
+                        print(player.x, player.y)
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_RIGHT:
                         player.velocity_x -= player_speed
@@ -103,7 +106,8 @@ def main():
             screen.blit(tilemap.map_display, (-camera_x, -camera_y))
             tilerects = tilemap.tile_rects
             lavarects = tilemap.lava_rects
-            player.move(tilerects,lavarects)
+            pipebottom_rects = tilemap.pipebottom_rects
+            player.move(tilerects,lavarects,pipebottom_rects)
             player.draw(camera_x, camera_y)
             if player.on_ground == True:
                 smash_counter = 0
@@ -161,8 +165,7 @@ def main():
             pygame.display.update()
             fps.tick(90)
             death_cooldown -= 1
+            print(player.has_won)
             if death_cooldown <= 0:
                 player.is_invincible = False
-            print(death_cooldown)
-            print(player.x,player.y)
 main()

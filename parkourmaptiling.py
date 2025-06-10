@@ -2,19 +2,24 @@ import pygame
 
 tile_rects = []
 lava_rects = []
-pipe_rects = []
+pipebottom_rects = []
 tilesize = 50
 grass_image_raw = pygame.image.load("Dirt_Grass_Block2.png")
 dirt_image_raw = pygame.image.load("Dirt_Block2.png")
 air_image_raw = pygame.image.load("air_tile.png")
 lava1_image_raw = pygame.image.load("lava_2.png")
 lava2_image_raw =pygame.image.load("lava_1.png")
-pipe=pygame.image.load("Leh_Pipe.png")
+pipetop_raw=pygame.image.load("Pipe_T.png")
+pipemid_raw=pygame.image.load("Pipe_M.png")
+pipebot_raw=pygame.image.load("Pipe_B.png")
 dirt_image = pygame.transform.scale(dirt_image_raw, (tilesize, tilesize))
 grass_image = pygame.transform.scale(grass_image_raw, (tilesize, tilesize))
 barrier_image = pygame.transform.scale(air_image_raw, (tilesize, tilesize))
 lava1_image = pygame.transform.scale(lava1_image_raw, (tilesize, tilesize))
 lava2_image = pygame.transform.scale(lava2_image_raw, (tilesize, tilesize))
+pipetop_image = pygame.transform.scale(pipetop_raw, (tilesize, tilesize))
+pipemiddle_image = pygame.transform.scale(pipemid_raw, (tilesize, tilesize))
+pipebottom_image = pygame.transform.scale(pipebot_raw, (tilesize, tilesize))
 map_display = pygame.Surface((7500,7500))
 map_yoffset = 5000
 game_map = [
@@ -53,10 +58,10 @@ game_map = [
 
 
 def rendermap():
-    global tile_rects, lava_rects, pipe_rects
+    global tile_rects, lava_rects, pipebottom_rects
     tile_rects = []
     lava_rects = []
-    pipe_rects = []
+    pipebottom_rects = []
     map_display.fill((126, 224, 235))
     y = 0
 
@@ -66,15 +71,14 @@ def rendermap():
             if tile == 4:
                 rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
                 lava_rects.append(rect)
-            elif tile==6:
-                rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
-                pipe_rects.append(rect)
-            elif tile == 5:
+            # elif tile == 8:
+            #      rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
+            #      pipebottom_rects.append(rect)
+            elif tile == 5 or tile == 6 or tile == 7 or tile == 8:
                 pass
             elif tile != 0:
                 rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
                 tile_rects.append(rect)
-
             if tile == 1:
                 map_display.blit(dirt_image, (x * tilesize, y * tilesize + map_yoffset))
             elif tile == 2:
@@ -86,6 +90,10 @@ def rendermap():
             elif tile == 5:
                 map_display.blit(lava1_image, (x * tilesize, y * tilesize + map_yoffset))
             elif tile==6:
-                map_display.blit(pipe, (x * tilesize, y * tilesize + map_yoffset))
+                map_display.blit(pipetop_image, (x * tilesize, y * tilesize + map_yoffset))
+            elif tile ==7:
+                map_display.blit(pipemiddle_image, (x * tilesize, y * tilesize + map_yoffset))
+            elif tile == 8:
+                map_display.blit(pipebottom_image, (x * tilesize, y * tilesize + map_yoffset))
             x += 1
         y += 1
