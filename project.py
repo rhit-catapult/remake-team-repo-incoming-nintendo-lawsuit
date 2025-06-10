@@ -142,9 +142,11 @@ def main():
                             score-=500
                             death_cooldown = 180
                             player_invincible = True
+                            player.is_invincible = True
 
             time = pygame.time.get_ticks() - last_death
-            time = round(time,2) / 1000
+            time_raw = time / 1000
+            time = round(time_raw,1)
             score_text = font.render(f"Score: {score}", True, (0, 0, 0))
             time_text = font.render(f"{time}", True, (0, 0, 0))
             screen.blit(score_text, (20, 20))
@@ -159,5 +161,8 @@ def main():
             pygame.display.update()
             fps.tick(90)
             death_cooldown -= 1
+            if death_cooldown <= 0:
+                player.is_invincible = False
+            print(death_cooldown)
             print(player.x,player.y)
 main()

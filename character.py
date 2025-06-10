@@ -27,6 +27,7 @@ class Player:
         self.animation_speed = .15
         self.rect = self.walk_right_images[0].get_rect()
         self.screen = screen
+        self.is_invincible = False
         self.x = x
         self.y = y
         self.jump_power = -7
@@ -43,6 +44,7 @@ class Player:
         self.enemy_bounce = False
         self.touching_lava = False
         self.hitbox = pygame.Rect(self.x,self.y,31,50)
+        self.invincibletimer = 0
     def scale_sprite_image(self, image):
         temp_image = pygame.image.load(image)
         width = temp_image.get_rect().width
@@ -78,7 +80,7 @@ class Player:
             self.facing_left = False
         else:
             image = self.walk_left_images[0] if self.facing_left else self.walk_right_images[0]
-        if 925 > self.idle_time > 900:
+        if 925 > self.idle_time > 900 or  1000 > self.idle_time > 975:
             self.idle_animation_timer += self.idle_animation_speed
             if self.idle_animation_timer >= 1:
                 self.idle_animation_timer = 0
@@ -86,6 +88,12 @@ class Player:
             image = self.idle_images[self.idle_frame_index]
         else:
             self.idle_frame_index = 0
+        if self.is_invincible == True:
+            if self.invincibletimer % 2 == 0:
+                image = pygame.image.load("air_tile.png")
+            self.invincibletimer += 1
+        else:
+            self.invincibletimer = 0
         self.screen.blit(image, (draw_x, draw_y))
 
     # def move(self,tiles):
