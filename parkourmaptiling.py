@@ -21,8 +21,6 @@ pipetop_image = pygame.transform.scale(pipetop_raw, (tilesize, tilesize))
 pipemiddle_image = pygame.transform.scale(pipemid_raw, (tilesize, tilesize))
 pipebottom_image = pygame.transform.scale(pipebot_raw, (tilesize, tilesize))
 map_display = pygame.Surface((7500,7500))
-background_image = pygame.image.load("Sky.png")
-background_image = pygame.transform.scale(background_image, (map_display.get_width(), map_display.get_height()))
 map_yoffset = 4490
 game_map = [
 [3] + [0]*139 + [3],

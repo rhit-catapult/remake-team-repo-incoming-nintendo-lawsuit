@@ -50,8 +50,8 @@ def main():
     start_screen(screen)
     enemy_smash_jump = -500000
     death_cooldown = 0
-    background_image = pygame.image.load("BG_1.jpg")
-    background_image = pygame.transform.scale(background_image, (screen.get_width(), screen.get_height()))
+    background_image = pygame.image.load("Sky.jpg")
+    #background_image = pygame.transform.scale(background_image, (screen.get_width(), screen.get_height()))
     while True:  # Restart loop
         fps = pygame.time.Clock()
         player = character.Player(screen, 50, 5500)
