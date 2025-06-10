@@ -177,14 +177,12 @@ def main():
             screen.blit(time_text, (20, 80))
 
             screen.blit(time_text, (20, 70))
-            print(k)
             for c in coins:
                 c.draw(screen, camera_x, camera_y)
             for c in coins.copy():
                 if player.hitbox.colliderect(c.rect):
                     score += 50
                     coins.remove(c)
-            print(player.velocity_x)
             fps.tick(90)
             pygame.display.update()
             death_cooldown -= 1
