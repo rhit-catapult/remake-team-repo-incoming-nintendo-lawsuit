@@ -19,11 +19,13 @@ def game_over(screen, resolution):
     pygame.event.clear()  # Clear input events# Wait 3 seconds
 
 def main():
+    last_death = 0
     pygame.init()
     resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("work pls")
     enemy_smash_jump = -500000
+    time = 0
     while True:  # Restart loop
         fps = pygame.time.Clock()
         player = character.Player(screen, 50, 5500)
@@ -117,6 +119,7 @@ def main():
             if player.y > 9000 or player.touching_lava:
                 game_over(screen, resolution)
                 running = False
+                last_death = pygame.time.get_ticks()
                 break
             for enemy in enemies:
                 if player.hitbox.colliderect(enemy.rect):
@@ -132,10 +135,14 @@ def main():
                     if player.velocity_y <= 0 and enemy.flattened == False and player_invincible == False:
                         game_over(screen, resolution)
                         running = False
+                        last_death = pygame.time.get_ticks()
                         break
-
+            time = pygame.time.get_ticks() - last_death
+            time = round(time,2) / 1000
             score_text = font.render(f"Score: {score}", True, (0, 0, 0))
+            time_text = font.render(f"{time}", True, (0, 0, 0))
             screen.blit(score_text, (20, 20))
+            screen.blit(time_text, (20, 70))
             for c in coins:
                 c.draw(screen, camera_x, camera_y)
 
