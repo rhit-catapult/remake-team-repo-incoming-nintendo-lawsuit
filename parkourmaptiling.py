@@ -2,12 +2,14 @@ import pygame
 
 tile_rects = []
 lava_rects = []
+pipe_rects = []
 tilesize = 50
 grass_image_raw = pygame.image.load("Dirt_Grass_Block2.png")
 dirt_image_raw = pygame.image.load("Dirt_Block2.png")
 air_image_raw = pygame.image.load("air_tile.png")
 lava1_image_raw = pygame.image.load("lava_2.png")
 lava2_image_raw =pygame.image.load("lava_1.png")
+pipe=pygame.image.load("Leh_Pipe.png")
 dirt_image = pygame.transform.scale(dirt_image_raw, (tilesize, tilesize))
 grass_image = pygame.transform.scale(grass_image_raw, (tilesize, tilesize))
 barrier_image = pygame.transform.scale(air_image_raw, (tilesize, tilesize))
@@ -46,14 +48,15 @@ game_map = [
 [3] + [1]*25 + [2]*23 + [1]*97 + [3],
 [3] + [1]*139 + [3],
 [3] + [1]*139 + [3],
-
 ]
 
 
+
 def rendermap():
-    global tile_rects, lava_rects
+    global tile_rects, lava_rects, pipe_rects
     tile_rects = []
     lava_rects = []
+    pipe_rects = []
     map_display.fill((146, 244, 255))
     y = 0
 
@@ -63,11 +66,15 @@ def rendermap():
             if tile == 4:
                 rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
                 lava_rects.append(rect)
+            elif tile==6:
+                rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
+                pipe_rects.append(rect)
             elif tile == 5:
                 pass
             elif tile != 0:
                 rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
                 tile_rects.append(rect)
+
             if tile == 1:
                 map_display.blit(dirt_image, (x * tilesize, y * tilesize + map_yoffset))
             elif tile == 2:
@@ -78,5 +85,7 @@ def rendermap():
                 map_display.blit(lava2_image, (x * tilesize, y * tilesize + map_yoffset))
             elif tile == 5:
                 map_display.blit(lava1_image, (x * tilesize, y * tilesize + map_yoffset))
+            elif tile==6:
+                map_display.blit(pipe, (x * tilesize, y * tilesize + map_yoffset))
             x += 1
         y += 1
