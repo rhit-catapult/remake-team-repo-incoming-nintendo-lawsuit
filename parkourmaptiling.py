@@ -25,7 +25,7 @@ game_map = [
 [3] + [1]*2 + [0]*5 + [2]*10 + [0]*8 + [2] + [1]*9 + [0]*5 + [1]*10 +[0]*107 + [3],
 [3] + [1]*2 + [0]*5 + [1]*10 + [0]*132 + [3],
 [3] + [1]*2 + [0]*137 + [3],
-[3] + [1]*2 + [2]*23  + [0]*25  + [2]*95 + [3],
+[3] + [1]*2 + [4]*23  + [0]*25  + [4]*95 + [3],
 [3] + [1]*25 + [0]*25 + [1]*95 + [3],
 [3] + [1]*25 + [0]*23 + [2]*2 + [1]*95 + [3],
 [3] + [1]*25 + [0]*23 + [1]*97 + [3],
@@ -51,7 +51,6 @@ def rendermap():
             elif tile != 0:
                 rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
                 tile_rects.append(rect)
-
             if tile == 1:
                 map_display.blit(dirt_image, (x * tilesize, y * tilesize + map_yoffset))
             elif tile == 2:

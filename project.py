@@ -39,12 +39,12 @@ def main():
         font = pygame.font.SysFont(None, 40)
 
         coin_list = [coin.Coin(800, 5200),
-                     coin.Coin(650, 5500),
+                     coin.Coin(650, 5510),
                      coin.Coin(500, 5200),
-                     coin.Coin(1350, 5300),
-                     coin.Coin(1750, 5300),
-                     coin.Coin(2150, 5300),
-                     coin.Coin(2500, 5300)
+                     coin.Coin(1350, 5500),
+                     coin.Coin(1750, 5500),
+                     coin.Coin(2150, 5500),
+                     coin.Coin(2500, 5500)
                      ]
         coins = pygame.sprite.Group(*coin_list)
 
@@ -74,8 +74,8 @@ def main():
             camera_x, camera_y = camera.scroll_camera(player.hitbox, resolution[0], resolution[1], 7000, 7000)
             screen.blit(tilemap.map_display, (-camera_x, -camera_y))
             tilerects = tilemap.tile_rects
-            lavatiles = tilemap.lava_rects
-            player.move(tilerects)
+            lavarects = tilemap.lava_rects
+            player.move(tilerects,lavarects)
             player.draw(camera_x, camera_y)
             if enemy_smash_jump > pygame.time.get_ticks() - 800:
                 player_invincible = True
@@ -86,7 +86,7 @@ def main():
             for enemy in enemies:
                 enemy.update(tilerects,enemies)
                 screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
-            if player.y > 6000:
+            if player.y > 6000 or player.touching_lava:
                 game_over(screen, resolution)
                 running = False
                 break
@@ -107,7 +107,6 @@ def main():
 
             score_text = font.render(f"Score: {score}", True, (0, 0, 0))
             screen.blit(score_text, (20, 20))
-
             for c in coins:
                 c.draw(screen, camera_x, camera_y)
 
@@ -116,6 +115,5 @@ def main():
                     score += 50
                     coins.remove(c)
             pygame.display.update()
-            print(player_invincible)
             fps.tick(90)
 main()
