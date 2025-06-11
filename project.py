@@ -23,7 +23,7 @@ def start_screen(screen):
     font_msg = pygame.font.SysFont("segoeuiemoji", 40)
 
     title_text = font_title.render("Nur Simualator", True, (0, 0, 0))
-    msg_text = font_msg.render("Press any key to start...", True, (0, 0, 0))
+    msg_text = font_msg.render("Press any key to start!", True, (0, 0, 0))
 
     screen.fill((146, 244, 255))
     screen.blit(title_text, title_text.get_rect(center=(screen.get_width() // 2, 200)))
@@ -44,6 +44,18 @@ def main():
     left_pressed = False
     right_pressed = False
     pygame.init()
+    # Load and play background music
+    pygame.mixer.init()
+    pygame.mixer.music.load("game-mode-on.mp3")  # Replace with your file
+    pygame.mixer.music.set_volume(0.3)
+    pygame.mixer.music.play(-1)
+
+    resolution = (1000, 600)
+    screen = pygame.display.set_mode(resolution)
+    pygame.display.set_caption("work pls")
+
+    start_screen(screen)
+
     resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("Nur Simulator")
@@ -152,7 +164,7 @@ def main():
             screen.blit(tilemap.map_display, (-camera_x, -camera_y))
             tilerects = tilemap.tile_rects
             lavarects = tilemap.lava_rects
-            player.move(tilerects,lavarects,tilemap.pipebottom_rects)
+            player.move(tilerects,lavarects,tilemap.pipebottom_rects, tilemap.brick_rects)
             player.draw(camera_x, camera_y)
             if player.on_ground:
                 smash_counter = 0
@@ -166,7 +178,7 @@ def main():
             for enemy in enemies:
                 enemy.update(tilerects,enemies)
                 screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
-            if player.y > 9000 or player.touching_lava:
+            if player.y > 9000 or player.touching_lava or player.touching_brick:
                 game_over(screen, resolution)
                 running = False
                 last_death = pygame.time.get_ticks()

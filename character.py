@@ -44,6 +44,7 @@ class Player:
         self.coyote_enable = False
         self.enemy_bounce = False
         self.touching_lava = False
+        self.touching_brick=False
         self.hitbox = pygame.Rect(self.x,self.y,31,50)
         self.invincibletimer = 0
     def scale_sprite_image(self, image):
@@ -134,7 +135,7 @@ class Player:
     #     if self.jump_time + 200 > pygame.time.get_ticks() and self.on_ground: # 200ms since last jump input
     #         self.jump() # jumps when landing
 # CHATGPT VERSION (MUCH BETTER FUNCTIONALLY THAN MINE - 2 HOURS OF FAILURE)
-    def move(self, tiles,lavatiles,pipetiles):
+    def move(self, tiles,lavatiles,pipetiles, bricktiles):
         collision_types = {'top': False, 'bottom': False, 'left': False, 'right': False}
         # if self.y > 5700:
         #     self.x = 50
@@ -209,6 +210,11 @@ class Player:
             self.touching_lava = True
         else:
             self.touching_lava = False
+        self.collision(bricktiles)
+        if len(self.hit_list) > 0:
+            self.touching_brick = True
+        else:
+            self.touching_brick = False
         self.collision(pipetiles)
         if len(self.hit_list) > 0:
             self.has_won = True
