@@ -56,7 +56,7 @@ def main():
     while True:  # Restart loop
         fps = pygame.time.Clock()
         player = character.Player(screen, 50, 5500)
-        player_speed = 5
+        player_speed = 15
 
         tilemap.rendermap()
         smash_counter = 0
