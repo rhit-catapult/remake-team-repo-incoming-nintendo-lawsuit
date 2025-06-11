@@ -67,7 +67,7 @@ def main():
     #background_image = pygame.transform.scale(background_image, (screen.get_width(), screen.get_height()))
     while True:  # Restart loop
         fps = pygame.time.Clock()
-        player = character.Player(screen, 50, 5500)
+        player = character.Player(screen, 50, 5200)
         player_speed = 5
 
         tilemap.rendermap()
@@ -99,8 +99,8 @@ def main():
         score = 1000
         font = pygame.font.SysFont("segoeuiemoji", 28)
         coin_list = [
-                     coin.Coin(650, 5750),
-                     coin.Coin(650, 5600),
+                     coin.Coin(650, 5250),
+                     coin.Coin(650, 5100),
                      coin.Coin(1590, 5550),
                      coin.Coin(1840, 5100),
                      coin.Coin(1590, 5200),
@@ -178,10 +178,20 @@ def main():
             for enemy in enemies:
                 enemy.update(tilerects,enemies)
                 screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
-            if player.y > 9000 or player.touching_lava:
+            if player.y > 9000:
                 game_over(screen, resolution)
                 running = False
                 last_death = pygame.time.get_ticks()
+            if player.touching_lava and death_cooldown <= 0:
+                if score < 500:
+                    game_over(screen, resolution)
+                    last_death = pygame.time.get_ticks()
+                    running = False
+                else:
+                    score -= 500
+                    death_cooldown = 30
+                    player_invincible = True
+                    player.is_invincible = True
             for enemy in enemies:
                 if player.hitbox.colliderect(enemy.rect):
                     if player.velocity_y > 0 and enemy.flattened == False:
@@ -222,7 +232,7 @@ def main():
             screen.blit(time_text, (20, 80))
             pygame.display.update()
            # print(player.x,player.y)
-           #  print(fps.get_fps())
+            print(fps.get_fps())
             death_cooldown -= 1
             if death_cooldown <= 0:
                 player.is_invincible = False
