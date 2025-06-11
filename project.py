@@ -23,7 +23,7 @@ def start_screen(screen):
     font_msg = pygame.font.SysFont("segoeuiemoji", 40)
 
     title_text = font_title.render("Nur Simualator", True, (0, 0, 0))
-    msg_text = font_msg.render("Press any key to start!", True, (0, 0, 0))
+    msg_text = font_msg.render("Press any key to start...", True, (0, 0, 0))
 
     screen.fill((146, 244, 255))
     screen.blit(title_text, title_text.get_rect(center=(screen.get_width() // 2, 200)))
@@ -44,18 +44,6 @@ def main():
     left_pressed = False
     right_pressed = False
     pygame.init()
-    # Load and play background music
-    pygame.mixer.init()
-    pygame.mixer.music.load("game-mode-on.mp3")  # Replace with your file
-    pygame.mixer.music.set_volume(0.3)
-    pygame.mixer.music.play(-1)
-
-    resolution = (1000, 600)
-    screen = pygame.display.set_mode(resolution)
-    pygame.display.set_caption("work pls")
-
-    start_screen(screen)
-
     resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("Nur Simulator")
@@ -73,24 +61,24 @@ def main():
         tilemap.rendermap()
         smash_counter = 0
         enemy_list = [
-            Enemy(650, 4850,2),
+            Enemy(650, 5350,2),
             Enemy(1615, 5500,2),
-            Enemy(1615, 5000, 1),
-            Enemy(1850, 5300, 1),
-            Enemy(1850, 4850,2),
-            Enemy(1400, 5500, 0),
-            Enemy(1500, 5500, 0),
-            Enemy(1600, 5500, 0),
-            Enemy(1700, 5500, 0),
-            Enemy(1800, 5500, 0),
-            Enemy(1900, 5500, 0),
-            Enemy(2000, 5500, 0),
-            Enemy(2100, 5500, 0),
-            Enemy(2200, 5500, 0),
-            Enemy(2300, 5500, 0),
-            Enemy(3000, 5500, 2),
-            Enemy(3300, 5500, 2),
-            Enemy(3600, 5500, 2)
+            Enemy(1615, 5900, 1),
+            Enemy(1850, 5800, 1),
+            Enemy(1850, 5350,2),
+            Enemy(1400, 6000, 0),
+            Enemy(1500, 6000, 0),
+            Enemy(1600, 6000, 0),
+            Enemy(1700, 6000, 0),
+            Enemy(1800, 6000, 0),
+            Enemy(1900, 6000, 0),
+            Enemy(2000, 6000, 0),
+            Enemy(2100, 6000, 0),
+            Enemy(2200, 6000, 0),
+            Enemy(2300, 6000, 0),
+            Enemy(3000, 6000, 2),
+            Enemy(3300, 6000, 2),
+            Enemy(3600, 6000, 2)
 
 
         ]
@@ -99,20 +87,20 @@ def main():
         score = 1000
         font = pygame.font.SysFont("segoeuiemoji", 28)
         coin_list = [
-                     coin.Coin(650, 5750),
-                     coin.Coin(650, 5600),
-                     coin.Coin(1590, 5550),
-                     coin.Coin(1840, 5100),
-                     coin.Coin(1590, 5200),
-                     coin.Coin(1840, 5400),
-                     coin.Coin(2010, 5100),
-                     coin.Coin(2410, 5100),
-                     coin.Coin(2610, 5250),
-                     coin.Coin(2710, 5300),
-                     coin.Coin(2710, 5050),
-                     coin.Coin(3060, 4950),
-                     coin.Coin(3360, 4850),
-                     coin.Coin(3660, 4750)
+                     coin.Coin(650, 5950),
+                     coin.Coin(650, 6100),
+                     coin.Coin(1590, 6050),
+                     coin.Coin(1840, 5600),
+                     coin.Coin(1590, 5700),
+                     coin.Coin(1840, 5900),
+                     coin.Coin(2010, 5600),
+                     coin.Coin(2410, 5600),
+                     coin.Coin(2610, 5750),
+                     coin.Coin(2710, 5800),
+                     coin.Coin(2710, 5550),
+                     coin.Coin(3060, 5450),
+                     coin.Coin(3360, 5350),
+                     coin.Coin(3660, 5250)
                      ]
         coins = pygame.sprite.Group(*coin_list)
         if left_pressed:
@@ -164,7 +152,7 @@ def main():
             screen.blit(tilemap.map_display, (-camera_x, -camera_y))
             tilerects = tilemap.tile_rects
             lavarects = tilemap.lava_rects
-            player.move(tilerects,lavarects,tilemap.pipebottom_rects, tilemap.brick_rects)
+            player.move(tilerects,lavarects,tilemap.pipebottom_rects)
             player.draw(camera_x, camera_y)
             if player.on_ground:
                 smash_counter = 0
@@ -216,13 +204,13 @@ def main():
                 if player.hitbox.colliderect(c.rect):
                     score += 50
                     coins.remove(c)
-            fps.tick(90)
+            fps.tick(80)
             screen.blit(score_text, (20, 20))
             screen.blit(heart_text, (20,50))
             screen.blit(time_text, (20, 80))
             pygame.display.update()
            # print(player.x,player.y)
-           #  print(fps.get_fps())
+            print(fps.get_fps())
             death_cooldown -= 1
             if death_cooldown <= 0:
                 player.is_invincible = False
