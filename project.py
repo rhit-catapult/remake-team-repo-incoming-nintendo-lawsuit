@@ -46,9 +46,12 @@ def main():
     pygame.init()
     # Load and play background music
     pygame.mixer.init()
+
     pygame.mixer.music.load("game-mode-on.mp3")  # Replace with your file
     pygame.mixer.music.set_volume(0.3)
     pygame.mixer.music.play(-1)
+    coin_sound = pygame.mixer.Sound("coin.mp3")  # Make sure the file is in the same folder
+    coin_sound.set_volume(0.3)
 
     resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
@@ -67,7 +70,7 @@ def main():
     #background_image = pygame.transform.scale(background_image, (screen.get_width(), screen.get_height()))
     while True:  # Restart loop
         fps = pygame.time.Clock()
-        player = character.Player(screen, 50, 5200)
+        player = character.Player(screen, 75, 5200)
         player_speed = 5
 
         tilemap.rendermap()
@@ -99,11 +102,12 @@ def main():
         score = 1000
         font = pygame.font.SysFont("segoeuiemoji", 28)
         coin_list = [
-                     coin.Coin(650, 5250),
-                     coin.Coin(650, 5100),
+                     coin.Coin(650, 5450),
+
+                     coin.Coin(650, 5600),
                      coin.Coin(1590, 5550),
                      coin.Coin(1840, 5100),
-                     coin.Coin(1590, 5200),
+                     coin.Coin(1590, 5240),
                      coin.Coin(1840, 5400),
                      coin.Coin(2010, 5100),
                      coin.Coin(2410, 5100),
@@ -217,13 +221,14 @@ def main():
             time = pygame.time.get_ticks() - last_death
             time_raw = time / 1000
             time = round(time_raw,1)
-            score_text = font.render(f"Score: {score}", True, (0, 0, 0))
-            heart_text = font.render(f"Lives:{live_count}", True, (0, 0, 0))
-            time_text = font.render(f"{time}", True, (0, 0, 0))
+            score_text = font.render(f"Score: {score}", True, (255, 255,255))
+            heart_text = font.render(f"Lives:{live_count}", True, (255, 255,255))
+            time_text = font.render(f"{time}", True, (255, 255,255))
             for c in coins:
                 c.draw(screen, camera_x, camera_y)
             for c in coins.copy():
                 if player.hitbox.colliderect(c.rect):
+                    coin_sound.play()
                     score += 50
                     coins.remove(c)
             fps.tick(90)
