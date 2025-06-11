@@ -5,7 +5,6 @@ import parkourmaptiling as tilemap
 import camera
 import coin
 from enemy import Enemy
-from parkourmaptiling import pipebottom_rects
 
 
 def game_over(screen, resolution):
@@ -23,7 +22,7 @@ def start_screen(screen):
     font_title = pygame.font.SysFont("segoeuiemoji", 80)
     font_msg = pygame.font.SysFont("segoeuiemoji", 40)
 
-    title_text = font_title.render("🐵 Super Monkey Jump!", True, (0, 0, 0))
+    title_text = font_title.render("Nur Simualator", True, (0, 0, 0))
     msg_text = font_msg.render("Press any key to start...", True, (0, 0, 0))
 
     screen.fill((146, 244, 255))
@@ -48,18 +47,16 @@ def main():
     pygame.init()
     resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
-    pygame.display.set_caption("work pls")
+    pygame.display.set_caption("Nur Simulator")
     start_screen(screen)
     enemy_smash_jump = -500000
     death_cooldown = 0
-    time = 0
     while True:  # Restart loop
         fps = pygame.time.Clock()
         player = character.Player(screen, 50, 5500)
         player_speed = 5
 
         tilemap.rendermap()
-        tilerects = tilemap.tile_rects
         smash_counter = 0
         enemy_list = [
             Enemy(650, 5350,2),
@@ -193,11 +190,6 @@ def main():
             score_text = font.render(f"Score: {score}", True, (0, 0, 0))
             heart_text = font.render(f"Lives:{live_count}", True, (0, 0, 0))
             time_text = font.render(f"{time}", True, (0, 0, 0))
-            screen.blit(score_text, (20, 20))
-            screen.blit(heart_text, (20,50))
-            screen.blit(time_text, (20, 80))
-
-            screen.blit(time_text, (20, 70))
             for c in coins:
                 c.draw(screen, camera_x, camera_y)
             for c in coins.copy():
