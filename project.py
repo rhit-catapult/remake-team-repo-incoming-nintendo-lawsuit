@@ -73,13 +73,16 @@ def main():
             Enemy(2000, 6000, 0),
             Enemy(2100, 6000, 0),
             Enemy(2200, 6000, 0),
-            Enemy(2300, 6000, 0)
+            Enemy(2300, 6000, 0),
+            Enemy(3000, 6000, 2),
+            Enemy(3300, 6000, 2),
+            Enemy(3600, 6000, 2)
 
 
         ]
         enemies = pygame.sprite.Group(*enemy_list)
         running = True
-        score = 0
+        score = 1000
         font = pygame.font.SysFont("segoeuiemoji", 28)
         coin_list = [
                      coin.Coin(650, 5950),
@@ -201,6 +204,7 @@ def main():
             screen.blit(heart_text, (20,50))
             screen.blit(time_text, (20, 80))
             pygame.display.update()
+            print(player.x,player.y)
             death_cooldown -= 1
             if death_cooldown <= 0:
                 player.is_invincible = False
