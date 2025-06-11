@@ -237,7 +237,7 @@ def main():
             screen.blit(time_text, (20, 80))
             pygame.display.update()
            # print(player.x,player.y)
-            print(fps.get_fps())
+            # print(fps.get_fps())
             death_cooldown -= 1
             if death_cooldown <= 0:
                 player.is_invincible = False
