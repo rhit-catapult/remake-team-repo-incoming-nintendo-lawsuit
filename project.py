@@ -46,9 +46,12 @@ def main():
     pygame.init()
     # Load and play background music
     pygame.mixer.init()
+
     pygame.mixer.music.load("game-mode-on.mp3")  # Replace with your file
     pygame.mixer.music.set_volume(0.3)
     pygame.mixer.music.play(-1)
+    coin_sound = pygame.mixer.Sound("coin.mp3")  # Make sure the file is in the same folder
+    coin_sound.set_volume(0.3)
 
     resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
@@ -224,6 +227,7 @@ def main():
                 c.draw(screen, camera_x, camera_y)
             for c in coins.copy():
                 if player.hitbox.colliderect(c.rect):
+                    coin_sound.play()
                     score += 50
                     coins.remove(c)
             fps.tick(90)
