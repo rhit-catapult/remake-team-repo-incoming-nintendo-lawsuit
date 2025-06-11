@@ -103,6 +103,7 @@ def main():
         font = pygame.font.SysFont("segoeuiemoji", 28)
         coin_list = [
                      coin.Coin(650, 5450),
+
                      coin.Coin(650, 5600),
                      coin.Coin(1590, 5550),
                      coin.Coin(1840, 5100),
