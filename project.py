@@ -204,7 +204,7 @@ def main():
                 if player.hitbox.colliderect(c.rect):
                     score += 50
                     coins.remove(c)
-            fps.tick(80)
+            fps.tick(90)
             screen.blit(score_text, (20, 20))
             screen.blit(heart_text, (20,50))
             screen.blit(time_text, (20, 80))
