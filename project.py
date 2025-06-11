@@ -5,7 +5,6 @@ import parkourmaptiling as tilemap
 import camera
 import coin
 from enemy import Enemy
-from parkourmaptiling import pipebottom_rects
 
 
 def game_over(screen, resolution):
@@ -26,17 +25,15 @@ def main():
     pygame.init()
     resolution = (1000, 600)
     screen = pygame.display.set_mode(resolution)
-    pygame.display.set_caption("work pls")
+    pygame.display.set_caption("Nur Simulator")
     enemy_smash_jump = -500000
     death_cooldown = 0
-    time = 0
     while True:  # Restart loop
         fps = pygame.time.Clock()
         player = character.Player(screen, 50, 5500)
         player_speed = 5
 
         tilemap.rendermap()
-        tilerects = tilemap.tile_rects
         smash_counter = 0
         enemy_list = [
             Enemy(650, 5350,2),
@@ -60,8 +57,7 @@ def main():
         enemies = pygame.sprite.Group(*enemy_list)
         running = True
         score = 0
-        font = pygame.font.SysFont(None, 40)
-
+        font = pygame.font.SysFont("segoeuiemoji", 28)
         coin_list = [
                      coin.Coin(650, 5950),
                      coin.Coin(650, 6100),
@@ -79,9 +75,9 @@ def main():
                      coin.Coin(3660, 5250)
                      ]
         coins = pygame.sprite.Group(*coin_list)
-        if left_pressed == True:
+        if left_pressed:
             player.velocity_x = -5
-        elif right_pressed == True:
+        elif right_pressed:
             player.velocity_x = 5
         k = 0
         while running:
@@ -105,11 +101,11 @@ def main():
                         print(player.x, player.y)
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_RIGHT:
-                        if right_pressed == True:
+                        if right_pressed:
                             player.velocity_x -= player_speed
                         right_pressed = False
                     if event.key == pygame.K_LEFT:
-                        if left_pressed == True:
+                        if left_pressed:
                          player.velocity_x += player_speed
                         left_pressed = False
                     if event.key == pygame.K_UP and not player.on_ground:
@@ -125,10 +121,9 @@ def main():
             screen.blit(tilemap.map_display, (-camera_x, -camera_y))
             tilerects = tilemap.tile_rects
             lavarects = tilemap.lava_rects
-            pipebottom_rects = tilemap.pipebottom_rects
-            player.move(tilerects,lavarects,pipebottom_rects)
+            player.move(tilerects,lavarects,tilemap.pipebottom_rects)
             player.draw(camera_x, camera_y)
-            if player.on_ground == True:
+            if player.on_ground:
                 smash_counter = 0
 
             if enemy_smash_jump > pygame.time.get_ticks() - 800:
@@ -165,18 +160,13 @@ def main():
                             death_cooldown = 180
                             player_invincible = True
                             player.is_invincible = True
-
+            live_count = "❤" * (score//500 + 1)
             time = pygame.time.get_ticks() - last_death
             time_raw = time / 1000
             time = round(time_raw,1)
             score_text = font.render(f"Score: {score}", True, (0, 0, 0))
-            heart_text = font.render(f"Lives:{"<3"*(score//500 + 1)}", True, (0, 0, 0))
+            heart_text = font.render(f"Lives:{live_count}", True, (0, 0, 0))
             time_text = font.render(f"{time}", True, (0, 0, 0))
-            screen.blit(score_text, (20, 20))
-            screen.blit(heart_text, (20,50))
-            screen.blit(time_text, (20, 80))
-
-            screen.blit(time_text, (20, 70))
             for c in coins:
                 c.draw(screen, camera_x, camera_y)
             for c in coins.copy():
@@ -184,6 +174,9 @@ def main():
                     score += 50
                     coins.remove(c)
             fps.tick(90)
+            screen.blit(score_text, (20, 20))
+            screen.blit(heart_text, (20,50))
+            screen.blit(time_text, (20, 80))
             pygame.display.update()
             death_cooldown -= 1
             if death_cooldown <= 0:
