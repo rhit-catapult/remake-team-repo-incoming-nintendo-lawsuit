@@ -68,29 +68,29 @@ def main():
     while True:  # Restart loop
         fps = pygame.time.Clock()
         player = character.Player(screen, 50, 5500)
-        player_speed = 15
+        player_speed = 5
 
         tilemap.rendermap()
         smash_counter = 0
         enemy_list = [
-            Enemy(650, 5350,2),
+            Enemy(650, 4850,2),
             Enemy(1615, 5500,2),
-            Enemy(1615, 5900, 1),
-            Enemy(1850, 5800, 1),
-            Enemy(1850, 5350,2),
-            Enemy(1400, 6000, 0),
-            Enemy(1500, 6000, 0),
-            Enemy(1600, 6000, 0),
-            Enemy(1700, 6000, 0),
-            Enemy(1800, 6000, 0),
-            Enemy(1900, 6000, 0),
-            Enemy(2000, 6000, 0),
-            Enemy(2100, 6000, 0),
-            Enemy(2200, 6000, 0),
-            Enemy(2300, 6000, 0),
-            Enemy(3000, 6000, 2),
-            Enemy(3300, 6000, 2),
-            Enemy(3600, 6000, 2)
+            Enemy(1615, 5000, 1),
+            Enemy(1850, 5300, 1),
+            Enemy(1850, 4850,2),
+            Enemy(1400, 5500, 0),
+            Enemy(1500, 5500, 0),
+            Enemy(1600, 5500, 0),
+            Enemy(1700, 5500, 0),
+            Enemy(1800, 5500, 0),
+            Enemy(1900, 5500, 0),
+            Enemy(2000, 5500, 0),
+            Enemy(2100, 5500, 0),
+            Enemy(2200, 5500, 0),
+            Enemy(2300, 5500, 0),
+            Enemy(3000, 5500, 2),
+            Enemy(3300, 5500, 2),
+            Enemy(3600, 5500, 2)
 
 
         ]
@@ -99,20 +99,20 @@ def main():
         score = 1000
         font = pygame.font.SysFont("segoeuiemoji", 28)
         coin_list = [
-                     coin.Coin(650, 5950),
-                     coin.Coin(650, 6100),
-                     coin.Coin(1590, 6050),
-                     coin.Coin(1840, 5600),
-                     coin.Coin(1590, 5700),
-                     coin.Coin(1840, 5900),
-                     coin.Coin(2010, 5600),
-                     coin.Coin(2410, 5600),
-                     coin.Coin(2610, 5750),
-                     coin.Coin(2710, 5800),
-                     coin.Coin(2710, 5550),
-                     coin.Coin(3060, 5450),
-                     coin.Coin(3360, 5350),
-                     coin.Coin(3660, 5250)
+                     coin.Coin(650, 5750),
+                     coin.Coin(650, 5600),
+                     coin.Coin(1590, 5550),
+                     coin.Coin(1840, 5100),
+                     coin.Coin(1590, 5200),
+                     coin.Coin(1840, 5400),
+                     coin.Coin(2010, 5100),
+                     coin.Coin(2410, 5100),
+                     coin.Coin(2610, 5250),
+                     coin.Coin(2710, 5300),
+                     coin.Coin(2710, 5050),
+                     coin.Coin(3060, 4950),
+                     coin.Coin(3360, 4850),
+                     coin.Coin(3660, 4750)
                      ]
         coins = pygame.sprite.Group(*coin_list)
         if left_pressed:
@@ -178,7 +178,7 @@ def main():
             for enemy in enemies:
                 enemy.update(tilerects,enemies)
                 screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
-            if player.y > 9000 or player.touching_lava or player.touching_brick:
+            if player.y > 9000 or player.touching_lava:
                 game_over(screen, resolution)
                 running = False
                 last_death = pygame.time.get_ticks()
@@ -222,7 +222,7 @@ def main():
             screen.blit(time_text, (20, 80))
             pygame.display.update()
            # print(player.x,player.y)
-            print(fps.get_fps())
+           #  print(fps.get_fps())
             death_cooldown -= 1
             if death_cooldown <= 0:
                 player.is_invincible = False
