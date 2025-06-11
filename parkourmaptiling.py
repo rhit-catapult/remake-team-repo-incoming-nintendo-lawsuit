@@ -66,7 +66,6 @@ game_map = [
 ]
 
 
-
 def rendermap():
     global tile_rects, lava_rects, pipebottom_rects
     tile_rects = []
