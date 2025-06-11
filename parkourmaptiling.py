@@ -15,8 +15,10 @@ pipetop_raw=pygame.image.load("Pipe_T.png")
 pipemid_raw=pygame.image.load("Pipe_M.png")
 pipebot_raw=pygame.image.load("Pipe_B.png")
 brick_raw=pygame.image.load("bricks.png")
+hog_raw = pygame.image.load("hog.png")
 brick_background_raw = pygame.image.load("brick_Background.png")
 dirt_image = pygame.transform.scale(dirt_image_raw, (tilesize, tilesize))
+thegoldenhog_image = pygame.transform.scale(hog_raw, (tilesize,tilesize))
 grass_image = pygame.transform.scale(grass_image_raw, (tilesize, tilesize))
 barrier_image = pygame.transform.scale(air_image_raw, (tilesize, tilesize))
 lava1_image = pygame.transform.scale(lava1_image_raw, (tilesize, tilesize))
@@ -51,9 +53,9 @@ def rendermap():
             if tile == 4:
                 rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
                 lava_rects.append(rect)
-            # elif tile == 8:
-            #      rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
-            #      pipebottom_rects.append(rect)
+            elif tile == 11:
+                 rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
+                 pipebottom_rects.append(rect)
             elif tile == 5 or tile == 6 or tile == 7 or tile == 8 or tile == 10:
                 pass
             elif tile != 0:
@@ -79,6 +81,7 @@ def rendermap():
                 map_display.blit(brick_image, (x * tilesize, y * tilesize + map_yoffset))
             elif tile == 10:
                 map_display.blit(brick_background_image, (x * tilesize, y * tilesize + map_yoffset))
-
+            elif tile == 11:
+                map_display.blit(thegoldenhog_image, (x * tilesize, y * tilesize + map_yoffset))
             x += 1
         y += 1

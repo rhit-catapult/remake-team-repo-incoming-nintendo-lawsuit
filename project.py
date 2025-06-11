@@ -238,6 +238,7 @@ def main():
             pygame.display.update()
            # print(player.x,player.y)
             # print(fps.get_fps())
+            print(player.has_won)
             death_cooldown -= 1
             if death_cooldown <= 0:
                 player.is_invincible = False
