@@ -68,7 +68,7 @@ def main():
     while True:  # Restart loop
         fps = pygame.time.Clock()
         player = character.Player(screen, 50, 5500)
-        player_speed = 15
+        player_speed = 5
 
         tilemap.rendermap()
         smash_counter = 0
@@ -178,7 +178,7 @@ def main():
             for enemy in enemies:
                 enemy.update(tilerects,enemies)
                 screen.blit(enemy.image, (enemy.rect.x - camera_x, enemy.rect.y - camera_y))
-            if player.y > 9000 or player.touching_lava or player.touching_brick:
+            if player.y > 9000 or player.touching_lava:
                 game_over(screen, resolution)
                 running = False
                 last_death = pygame.time.get_ticks()
@@ -222,7 +222,7 @@ def main():
             screen.blit(time_text, (20, 80))
             pygame.display.update()
            # print(player.x,player.y)
-            print(fps.get_fps())
+           #  print(fps.get_fps())
             death_cooldown -= 1
             if death_cooldown <= 0:
                 player.is_invincible = False

@@ -14,7 +14,8 @@ lava2_image_raw =pygame.image.load("lava_1.png")
 pipetop_raw=pygame.image.load("Pipe_T.png")
 pipemid_raw=pygame.image.load("Pipe_M.png")
 pipebot_raw=pygame.image.load("Pipe_B.png")
-brick_block=pygame.image.load("Brick_Block.png")
+brick_raw=pygame.image.load("bricks.png")
+brick_background_raw = pygame.image.load("brick_Background.png")
 dirt_image = pygame.transform.scale(dirt_image_raw, (tilesize, tilesize))
 grass_image = pygame.transform.scale(grass_image_raw, (tilesize, tilesize))
 barrier_image = pygame.transform.scale(air_image_raw, (tilesize, tilesize))
@@ -23,7 +24,8 @@ lava2_image = pygame.transform.scale(lava2_image_raw, (tilesize, tilesize))
 pipetop_image = pygame.transform.scale(pipetop_raw, (tilesize, tilesize))
 pipemiddle_image = pygame.transform.scale(pipemid_raw, (tilesize, tilesize))
 pipebottom_image = pygame.transform.scale(pipebot_raw, (tilesize, tilesize))
-brick=pygame.transform.scale(brick_block, (tilesize, tilesize))
+brick_image=pygame.transform.scale(brick_raw, (tilesize, tilesize))
+brick_background_image = pygame.transform.scale(brick_background_raw, (tilesize, tilesize))
 map_display = pygame.Surface((7500,7500))
 map_yoffset = 4490
 game_map = []
@@ -49,14 +51,10 @@ def rendermap():
             if tile == 4:
                 rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
                 lava_rects.append(rect)
-            if tile == 9:
-                rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
-                brick_rects.append(rect)
-                # tile_rects.append(rect)
             # elif tile == 8:
             #      rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
             #      pipebottom_rects.append(rect)
-            elif tile == 5 or tile == 6 or tile == 7 or tile == 8:
+            elif tile == 5 or tile == 6 or tile == 7 or tile == 8 or tile == 10:
                 pass
             elif tile != 0:
                 rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
@@ -78,7 +76,9 @@ def rendermap():
             elif tile == 8:
                 map_display.blit(pipebottom_image, (x * tilesize, y * tilesize + map_yoffset))
             elif tile==9:
-                map_display.blit(brick, (x * tilesize, y * tilesize + map_yoffset))
+                map_display.blit(brick_image, (x * tilesize, y * tilesize + map_yoffset))
+            elif tile == 10:
+                map_display.blit(brick_background_image, (x * tilesize, y * tilesize + map_yoffset))
 
             x += 1
         y += 1
