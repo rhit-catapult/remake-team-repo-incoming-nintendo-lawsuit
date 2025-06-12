@@ -33,17 +33,18 @@ def win_screen(screen,score,time):
     pygame.display.update()
 def start_screen(screen):
     pygame.font.init()
-    font_title = pygame.font.SysFont("segoeuiemoji", 80)
-    font_msg = pygame.font.SysFont("segoeuiemoji", 40)
+    font_title = pygame.font.SysFont("bahnschrift", 80)
+    font_msg = pygame.font.SysFont("bahnschrift", 40)
 
-    title_text = font_title.render("Super Nur Adventures", True, (0, 0, 0))
-    msg_text = font_msg.render("Press any key to start!", True, (0, 0, 0))
+    title_text = font_title.render("Super Nur Adventures", True, (255, 255, 255))
+    msg_text = font_msg.render("Press any key to start!", True, (255, 255, 255))
 
-    screen.fill((146, 244, 255))
-    screen.blit(title_text, title_text.get_rect(center=(screen.get_width() // 2, 200)))
-    screen.blit(msg_text, msg_text.get_rect(center=(screen.get_width() // 2, 400)))
-    msg_text = font_msg.render("Reach the Golden Hog.", True, (0, 0, 0))
-    screen.blit(msg_text, msg_text.get_rect(center=(screen.get_width() // 2, 500)))
+    # screen.fill((146, 244, 255))
+    image = pygame.image.load("Title Screen.jpg")
+    image = pygame.transform.scale(image, (1000,600))
+    screen.blit(image,(0,0))
+    screen.blit(title_text, title_text.get_rect(center=(screen.get_width() // 2, 50)))
+    screen.blit(msg_text, msg_text.get_rect(center=(screen.get_width() // 2, 100)))
     pygame.display.update()
 
     waiting = True
@@ -146,6 +147,7 @@ def main():
         elif right_pressed:
             player.velocity_x = 5
         k = 0
+        timer = last_death
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
