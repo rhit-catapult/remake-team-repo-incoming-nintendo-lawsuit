@@ -19,11 +19,17 @@ def game_over(screen, resolution):
     pygame.event.clear()  # Clear input events# Wait 3 second
 def win_screen(screen,score,time):
     win_picture = pygame.image.load("ending_title.jpg")
-    font_msg = pygame.font.SysFont("segoeuiemoji", 40)
-    score = score + (60 - time) * 100
-    msg_text = font_msg.render(f"Final Score:{score}", True, (0, 0, 0))
+    font_msg = pygame.font.SysFont("bahnschrift", 40)
+    temp_score = round(score + (60 - time) * 500)
+    if temp_score < score:
+        score = score
+    else:
+        score = temp_score
+    msg_text = font_msg.render(f"Final Score:{score}", True, (242, 40, 202))
     screen.blit(win_picture, (0, 0))
-    screen.blit(msg_text, msg_text.get_rect(center=(screen.get_width() // 2, 400)))
+    screen.blit(msg_text,(100, 500))
+    msg_text = font_msg.render(f"Final Time:{time} seconds", True, (242, 40, 202))
+    screen.blit(msg_text,(100, 550))
     pygame.display.update()
 def start_screen(screen):
     pygame.font.init()
@@ -55,7 +61,6 @@ def main():
     left_pressed = False
     right_pressed = False
     pygame.init()
-    # Load and play background music
     pygame.mixer.init()
 
     pygame.mixer.music.load("game-mode-on.mp3")  # Replace with your file
@@ -81,31 +86,28 @@ def main():
     #background_image = pygame.transform.scale(background_image, (screen.get_width(), screen.get_height()))
     while True:  # Restart loop
         fps = pygame.time.Clock()
-        player = character.Player(screen, 75, 5200)
+        player = character.Player(screen, 100, 5300)
         player_speed = 5
 
         tilemap.rendermap()
         smash_counter = 0
         enemy_list = [
-            # Enemy(650, 4850,2),
-            # Enemy(1615, 5500,2),
-            # Enemy(1615, 5000, 1),
-            # Enemy(1850, 5300, 1),
-            # Enemy(1850, 4850,2),
-            # Enemy(1400, 5500, 0),
-            # Enemy(1500, 5500, 0),
-            # Enemy(1600, 5500, 0),
-            # Enemy(1700, 5500, 0),
-            # Enemy(1800, 5500, 0),
-            # Enemy(1900, 5500, 0),
-            # Enemy(2000, 5500, 0),
-            # Enemy(2100, 5500, 0),
-            # Enemy(2200, 5500, 0),
-            # Enemy(2300, 5500, 0),
-            # Enemy(3000, 5500, 2),
-            # Enemy(3300, 5500, 2),
-            # Enemy(3600, 5500, 2)
-            #
+            Enemy(1615, 5000, 1),
+            Enemy(1850, 4850,2),
+            Enemy(1500, 5500, 0),
+            Enemy(1700, 5500, 0),
+            Enemy(1900, 5500, 0),
+            Enemy(2100, 5500, 0),
+            Enemy(2300, 5500, 0),
+            Enemy(3000, 5500, 2),
+            Enemy(3300, 5500, 2),
+            Enemy(3600, 5500, 2),
+            Enemy(4525, 5100, 1),
+            Enemy(4525, 5600, 1),
+            Enemy(6500, 5350, 2),
+            Enemy(6000, 6200, 0),
+            Enemy(6700, 6200, 1),
+
 
         ]
         enemies = pygame.sprite.Group(*enemy_list)
@@ -115,7 +117,6 @@ def main():
         font = pygame.font.SysFont("segoeuiemoji", 28)
         coin_list = [
                      coin.Coin(650, 5450),
-
                      coin.Coin(650, 5600),
                      coin.Coin(1590, 5550),
                      coin.Coin(1840, 5100),
@@ -128,7 +129,16 @@ def main():
                      coin.Coin(2710, 5050),
                      coin.Coin(3060, 4950),
                      coin.Coin(3360, 4850),
-                     coin.Coin(3660, 4750)
+                     coin.Coin(3660, 4750),
+                     coin.Coin(4160, 5530),
+                     coin.Coin(4160, 5230),
+                     coin.Coin(4365, 4690),
+                     coin.Coin(4660,5540),
+                     coin.Coin(5560,5400),
+                     coin.Coin(5710,5690),
+                     coin.Coin(5860,5990),
+                     coin.Coin(6100, 5990),
+                     coin.Coin(6365, 5990),
                      ]
         coins = pygame.sprite.Group(*coin_list)
         if left_pressed:
