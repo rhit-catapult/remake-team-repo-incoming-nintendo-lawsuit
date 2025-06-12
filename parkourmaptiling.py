@@ -15,10 +15,16 @@ pipetop_raw=pygame.image.load("Pipe_T.png")
 pipemid_raw=pygame.image.load("Pipe_M.png")
 pipebot_raw=pygame.image.load("Pipe_B.png")
 brick_raw=pygame.image.load("bricks.png")
-hog_raw = pygame.image.load("hog.png")
+hog_rawbl = pygame.image.load("hog_bottomleft_complete.png")
+hog_rawbr = pygame.image.load("hog_Bottomright_complete.png")
+hog_rawtl = pygame.image.load("hog_topleft_complete.png")
+hog_rawtr = pygame.image.load("hog_topright_complete.png")
 brick_background_raw = pygame.image.load("brick_Background.png")
 dirt_image = pygame.transform.scale(dirt_image_raw, (tilesize, tilesize))
-thegoldenhog_image = pygame.transform.scale(hog_raw, (tilesize,tilesize))
+thegoldenhog_imagetl = pygame.transform.scale(hog_rawtl, (tilesize,tilesize))
+thegoldenhog_imagetr = pygame.transform.scale(hog_rawtr, (tilesize,tilesize))
+thegoldenhog_imagebl = pygame.transform.scale(hog_rawbl, (tilesize,tilesize))
+thegoldenhog_imagebr = pygame.transform.scale(hog_rawbr, (tilesize,tilesize))
 grass_image = pygame.transform.scale(grass_image_raw, (tilesize, tilesize))
 barrier_image = pygame.transform.scale(air_image_raw, (tilesize, tilesize))
 lava1_image = pygame.transform.scale(lava1_image_raw, (tilesize, tilesize))
@@ -53,7 +59,7 @@ def rendermap():
             if tile == 4:
                 rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
                 lava_rects.append(rect)
-            elif tile == 11:
+            elif tile == 11 or tile == 12 or tile == 13 or tile == 14:
                  rect = pygame.Rect(x * tilesize, y * tilesize + map_yoffset, tilesize, tilesize)
                  pipebottom_rects.append(rect)
             elif tile == 5 or tile == 6 or tile == 7 or tile == 8 or tile == 10:
@@ -82,6 +88,12 @@ def rendermap():
             elif tile == 10:
                 map_display.blit(brick_background_image, (x * tilesize, y * tilesize + map_yoffset))
             elif tile == 11:
-                map_display.blit(thegoldenhog_image, (x * tilesize, y * tilesize + map_yoffset))
+                map_display.blit(thegoldenhog_imagebl, (x * tilesize, y * tilesize + map_yoffset))
+            elif tile == 12:
+                map_display.blit(thegoldenhog_imagebr, (x * tilesize, y * tilesize + map_yoffset))
+            elif tile == 13:
+                map_display.blit(thegoldenhog_imagetl, (x * tilesize, y * tilesize + map_yoffset))
+            elif tile == 14:
+                map_display.blit(thegoldenhog_imagetr, (x * tilesize, y * tilesize + map_yoffset))
             x += 1
         y += 1
