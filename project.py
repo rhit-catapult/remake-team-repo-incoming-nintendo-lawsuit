@@ -36,7 +36,7 @@ def start_screen(screen):
     font_title = pygame.font.SysFont("segoeuiemoji", 80)
     font_msg = pygame.font.SysFont("segoeuiemoji", 40)
 
-    title_text = font_title.render("Nur Simualator", True, (0, 0, 0))
+    title_text = font_title.render("Super Nur Adventures", True, (0, 0, 0))
     msg_text = font_msg.render("Press any key to start!", True, (0, 0, 0))
 
     screen.fill((146, 244, 255))
