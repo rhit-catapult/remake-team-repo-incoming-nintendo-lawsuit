@@ -6,6 +6,35 @@ import camera
 import coin
 from enemy import Enemy
 import samantha_module
+import random
+import math
+
+def draw_glow_text_animated(screen, text, font, x, y, tick):
+    # Calculate pulsing glow intensity safely
+    raw_intensity = int((math.sin(tick * 0.05) + 1) * 127) + 100
+    intensity = max(0, min(255, raw_intensity))  # clamp to valid range
+    glow_color = (intensity, intensity, intensity)
+    main_color = (255, 255, 255)
+
+    # Render soft glow by offsetting blurred shadows
+    for dx in [-2, -1, 0, 1, 2]:
+        for dy in [-2, -1, 0, 1, 2]:
+            if dx != 0 or dy != 0:
+                glow_surface = font.render(text, True, glow_color)
+                screen.blit(glow_surface, glow_surface.get_rect(center=(x + dx, y + dy)))
+
+    # Render main text on top
+    text_surface = font.render(text, True, main_color)
+    screen.blit(text_surface, text_surface.get_rect(center=(x, y)))
+
+
+def update(self):
+        self.velocity[1] += self.gravity
+        self.rect.x += self.velocity[0]
+        self.rect.y += self.velocity[1]
+        self.timer += 1
+        if self.timer >= self.lifespan:
+            self.kill()
 
 def game_over(screen, resolution):
     font = pygame.font.SysFont("segoeuiemoji", 80)
@@ -31,23 +60,46 @@ def win_screen(screen,score,time):
     msg_text = font_msg.render(f"Final Time:{time} seconds", True, (242, 40, 202))
     screen.blit(msg_text,(100, 550))
     pygame.display.update()
+def draw_glow_text(screen, text, font, x, y):
+    # Glow colors (light gray for glow, white on top)
+    glow_color = (200, 200, 200)
+    main_color = (255, 255, 255)
+    text_surface = font.render(text, True, glow_color)
+
+    # Draw glow around the text by offsetting
+    for dx in [-2, 0, 2]:
+        for dy in [-2, 0, 2]:
+            if dx != 0 or dy != 0:
+                glow_surface = font.render(text, True, glow_color)
+                screen.blit(glow_surface, text_surface.get_rect(center=(x + dx, y + dy)))
+
+    # Draw main white text on top
+    main_surface = font.render(text, True, main_color)
+    screen.blit(main_surface, main_surface.get_rect(center=(x, y)))
+
 def start_screen(screen):
     pygame.font.init()
     font_title = pygame.font.SysFont("segoeuiemoji", 80)
     font_msg = pygame.font.SysFont("segoeuiemoji", 40)
 
-    title_text = font_title.render("Nur Simualator", True, (0, 0, 0))
-    msg_text = font_msg.render("Press any key to start!", True, (0, 0, 0))
+    # Background
+    start_image = pygame.image.load("Title Screen.jpg")
+    start_image = pygame.transform.scale(start_image, (screen.get_width(), screen.get_height()))
 
-    screen.fill((146, 244, 255))
-    screen.blit(title_text, title_text.get_rect(center=(screen.get_width() // 2, 200)))
-    screen.blit(msg_text, msg_text.get_rect(center=(screen.get_width() // 2, 400)))
-    msg_text = font_msg.render("Reach the Golden Hog.", True, (0, 0, 0))
-    screen.blit(msg_text, msg_text.get_rect(center=(screen.get_width() // 2, 500)))
-    pygame.display.update()
-
+    clock = pygame.time.Clock()
+    tick = 0
     waiting = True
     while waiting:
+        screen.blit(start_image, (0, 0))
+
+        draw_glow_text_animated(screen, "Super Nur Adventure", font_title, screen.get_width() // 2, 200, tick)
+        draw_glow_text_animated(screen, "Press any key to start!", font_msg, screen.get_width() // 2, 400, tick)
+        draw_glow_text_animated(screen, "Reach the Golden Hog.", font_msg, screen.get_width() // 2, 500, tick)
+
+        pygame.display.update()
+        tick += 1
+        clock.tick(60)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -55,11 +107,14 @@ def start_screen(screen):
             elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 waiting = False
 
+
 def main():
     has_won_running = False
     last_death = 0
     left_pressed = False
     right_pressed = False
+    particles = pygame.sprite.Group()
+
     pygame.init()
     pygame.mixer.init()
 
@@ -208,6 +263,7 @@ def main():
                 running = False
                 last_death = pygame.time.get_ticks()
             if player.touching_lava and death_cooldown <= 0:
+
                 if score < 500:
                     game_over(screen, resolution)
                     last_death = pygame.time.get_ticks()
@@ -252,6 +308,8 @@ def main():
                     coin_sound.play()
                     score += 50
                     coins.remove(c)
+
+
             fps.tick(90)
             screen.blit(score_text, (20, 20))
             screen.blit(heart_text, (20,50))
