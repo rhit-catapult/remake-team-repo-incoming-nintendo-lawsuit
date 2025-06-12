@@ -17,9 +17,13 @@ def game_over(screen, resolution):
     pygame.display.update()
     pygame.time.delay(500)
     pygame.event.clear()  # Clear input events# Wait 3 second
-def win_screen(screen):
+def win_screen(screen,score,time):
     win_picture = pygame.image.load("ending_title.jpg")
+    font_msg = pygame.font.SysFont("segoeuiemoji", 40)
+    score = score + (60 - time) * 100
+    msg_text = font_msg.render(f"Final Score:{score}", True, (0, 0, 0))
     screen.blit(win_picture, (0, 0))
+    screen.blit(msg_text, msg_text.get_rect(center=(screen.get_width() // 2, 400)))
     pygame.display.update()
 def start_screen(screen):
     pygame.font.init()
@@ -247,7 +251,7 @@ def main():
             if death_cooldown <= 0:
                 player.is_invincible = False
             if player.has_won:
-                win_screen(screen)
+                win_screen(screen,score,time)
                 running = False
                 has_won_running = True
                 break
