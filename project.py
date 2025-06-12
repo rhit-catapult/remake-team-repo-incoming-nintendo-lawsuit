@@ -16,7 +16,11 @@ def game_over(screen, resolution):
     screen.blit(text, text_rect)
     pygame.display.update()
     pygame.time.delay(500)
-    pygame.event.clear()  # Clear input events# Wait 3 seconds
+    pygame.event.clear()  # Clear input events# Wait 3 second
+def win_screen(screen):
+    win_picture = pygame.image.load("ending_title.jpg")
+    screen.blit(win_picture, (0, 0))
+    pygame.display.update()
 def start_screen(screen):
     pygame.font.init()
     font_title = pygame.font.SysFont("segoeuiemoji", 80)
@@ -28,6 +32,8 @@ def start_screen(screen):
     screen.fill((146, 244, 255))
     screen.blit(title_text, title_text.get_rect(center=(screen.get_width() // 2, 200)))
     screen.blit(msg_text, msg_text.get_rect(center=(screen.get_width() // 2, 400)))
+    msg_text = font_msg.render("Reach the Golden Hog.", True, (0, 0, 0))
+    screen.blit(msg_text, msg_text.get_rect(center=(screen.get_width() // 2, 500)))
     pygame.display.update()
 
     waiting = True
@@ -40,6 +46,7 @@ def start_screen(screen):
                 waiting = False
 
 def main():
+    has_won_running = False
     last_death = 0
     left_pressed = False
     right_pressed = False
@@ -98,7 +105,8 @@ def main():
 
         ]
         enemies = pygame.sprite.Group(*enemy_list)
-        running = True
+        if not has_won_running:
+          running = True
         score = 1000
         font = pygame.font.SysFont("segoeuiemoji", 28)
         coin_list = [
@@ -160,7 +168,6 @@ def main():
                 pygame.event.post(pygame.event.Event(pygame.KEYDOWN, {"key": pygame.K_LEFT}))
                 pygame.event.post(pygame.event.Event(pygame.KEYUP, {"key": pygame.K_LEFT}))
                 k += 1
-           # screen.fill((146, 244, 255))
             screen.blit(background_image, (0, 0))
             camera_x, camera_y = camera.scroll_camera(player.hitbox, resolution[0], resolution[1], 7000, 7000)
             clouds.draw(screen,0, 0)
@@ -236,10 +243,13 @@ def main():
             screen.blit(heart_text, (20,50))
             screen.blit(time_text, (20, 80))
             pygame.display.update()
-           # print(player.x,player.y)
-            # print(fps.get_fps())
-            print(player.has_won)
             death_cooldown -= 1
             if death_cooldown <= 0:
                 player.is_invincible = False
+            if player.has_won:
+                win_screen(screen)
+                running = False
+                has_won_running = True
+                break
+
 main()
