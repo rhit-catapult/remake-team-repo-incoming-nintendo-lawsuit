@@ -147,7 +147,7 @@ def main():
         elif right_pressed:
             player.velocity_x = 5
         k = 0
-        timer = last_death
+        last_death = pygame.time.get_ticks()
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
